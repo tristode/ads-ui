@@ -4,8 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Post } from "@/types";
 import Author from "./author";
 import Timedelta from "./ui/timedelta";
+import AddComment, { AddCommentArgs } from "./add-comment";
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({
+  post,
+  addComment,
+}: {
+  post: Post;
+  addComment?: (comment: AddCommentArgs) => void;
+}) {
   return (
     <article className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
       <div className="p-4 flex flex-col">
@@ -32,6 +39,7 @@ export default function PostCard({ post }: { post: Post }) {
         )}
         <div className="mt-3 space-y-2">{post.content}</div>
       </div>
+      {addComment && <AddComment postId={post.id} addComment={addComment} />}
       {post.comments.map((comment) => (
         <Comment key={comment.id} comment={comment} />
       ))}

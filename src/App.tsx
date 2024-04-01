@@ -52,6 +52,9 @@ function App() {
             },
           ],
         }}
+        addComment={(comment) => {
+          console.log(comment);
+        }}
       />
       <ModeToggle />
     </ThemeProvider>
