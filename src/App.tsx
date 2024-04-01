@@ -1,12 +1,20 @@
 import Post from "@/components/post";
 import { ThemeProvider } from "@/components/theme-provider";
 import Auth from "./components/auth";
+import Invite from "./components/invite";
 import { ModeToggle } from "./components/mode-toggle";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Auth />
+      <Invite
+        link="https://discord.gg/mnwByZAS"
+        title="УКУ: Прикладні науки"
+        icon="https://cdn.discordapp.com/icons/1015001493780320327/25afdfbde6ce874799f812cc9d042889.webp?size=56"
+        preamble="А ви знали, що ФПН має діскорд-сервер?"
+        notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
+      />
       <Post
         post={{
           id: "1",
