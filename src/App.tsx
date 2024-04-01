@@ -9,6 +9,7 @@ function App() {
         post={{
           id: "1",
           title: "Hello World",
+          badges: ["badge1", "badge2"],
           content: "This is a post content",
           images: [
             "https://picsum.photos/800/600?random=1",

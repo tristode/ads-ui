@@ -16,6 +16,7 @@ export type Comment = {
 export type Post = {
   id: string;
   title: string;
+  badges?: string[];
   content: string;
   images?: string[];
 
