@@ -7,7 +7,7 @@ import Timedelta from "./ui/timedelta";
 export default function PostCard({ post }: { post: Post }) {
   return (
     <article className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-      <div className="p-4">
+      <div className="p-4 flex flex-col">
         <Author user={post.author}>
           <Timedelta dateTime={post.postedAt} />
         </Author>

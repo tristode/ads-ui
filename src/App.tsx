@@ -24,6 +24,7 @@ function App() {
             id: "1",
             name: "John Doe",
             avatar: "https://picsum.photos/40/40?random=1",
+            bio: "This is a bio",
           },
           postedAt: new Date(),
           comments: [
@@ -42,8 +43,9 @@ function App() {
               content: "This is a comment",
               author: {
                 id: "2",
-                name: "Jane Doe",
+                name: "Jane Doe with bio",
                 avatar: "https://picsum.photos/40/40?random=2",
+                bio: "This is a bio",
               },
               postedAt: new Date(),
             },

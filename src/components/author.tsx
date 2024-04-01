@@ -1,5 +1,10 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { User } from "@/types";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export default function Author({
   user,
@@ -9,13 +14,29 @@ export default function Author({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center space-x-2">
-      <Avatar className="w-6 h-6">
-        <AvatarImage alt={user.name} src={user.avatar} />
-        <AvatarFallback>{user.name[0]}</AvatarFallback>
-      </Avatar>
-      <span className="font-bold">{user.name}</span>
-      {children}
-    </div>
+    <HoverCard>
+      <HoverCardTrigger className="flex items-center space-x-2 cursor-pointer">
+        <Avatar className="w-6 h-6">
+          <AvatarImage alt={user.name} src={user.avatar} />
+          <AvatarFallback>{user.name[0]}</AvatarFallback>
+        </Avatar>
+        <span className="font-bold">{user.name}</span>
+        {children}
+      </HoverCardTrigger>
+      {user.bio && (
+        <HoverCardContent align="start">
+          <div className="flex items-start space-x-2">
+            <Avatar className="w-8 h-8">
+              <AvatarImage alt={user.name} src={user.avatar} />
+              <AvatarFallback>{user.name[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-bold">{user.name}</span>
+              <span className="text-sm text-gray-500">{user.bio}</span>
+            </div>
+          </div>
+        </HoverCardContent>
+      )}
+    </HoverCard>
   );
 }
