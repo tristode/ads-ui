@@ -12,7 +12,7 @@ function FullScreenableImage({ src, alt }: { src: string; alt: string }) {
         <img
           src={src}
           alt={alt}
-          className="object-contain max-h-full max-w-full"
+          className="object-contain max-h-full max-w-full cursor-pointer"
           onClick={(e) => e.stopPropagation()}
         />
         <a
