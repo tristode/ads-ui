@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { MdSend } from "react-icons/md";
-import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
 export interface AddCommentArgs {
