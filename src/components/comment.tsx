@@ -1,11 +1,11 @@
-import User from "@/components/ui/user";
+import User from "@/components/user";
 import { Comment } from "@/types";
 
 export default function CommentCard({ comment }: { comment: Comment }) {
   return (
-    <div className="p-4 bg-white hover:bg-gray-50">
+    <div className="p-4">
       <User user={comment.author} />
-      <div className="mt-3 space-y-2">{comment.content}</div>
+      <div className="pl-4 mt-3">{comment.content}</div>
     </div>
   );
 }
