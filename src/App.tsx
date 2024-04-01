@@ -1,10 +1,12 @@
 import Post from "@/components/post";
 import { ThemeProvider } from "@/components/theme-provider";
+import Auth from "./components/auth";
 import { ModeToggle } from "./components/mode-toggle";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Auth />
       <Post
         post={{
           id: "1",
