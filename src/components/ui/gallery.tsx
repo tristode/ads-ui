@@ -55,23 +55,24 @@ export default function Gallery({ images }: { images: string[] }) {
     );
   }
 
-  const height = {
-    1: "400px",
-    2: "300px",
-    3: "300px",
-    4: "400px",
-    5: "300px",
-    6: "300px",
-    7: "400px",
-    8: "400px",
-    9: "400px",
+  const aspect_ratio = {
+    1: "1/1",
+    2: "2/3",
+    3: "2/3",
+    4: "1/1",
+    5: "3/4",
+    6: "3/4",
+    7: "1/1",
+    8: "1/1",
+    9: "1/1",
   }[images.length];
 
   return (
     <div
-      className={`mt-3 h-[${height}] bg-gray-200 rounded-lg justify-center items-center overflow-hidden grid gap-0`}
+      className="mt-3 bg-gray-200 rounded-lg justify-center items-center overflow-hidden grid gap-0"
       style={{
         gridTemplateAreas: grid_template_areas,
+        aspectRatio: aspect_ratio,
       }}
     >
       {images.map((image, index) => (
