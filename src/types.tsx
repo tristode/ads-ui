@@ -7,7 +7,6 @@ export type User = {
   avatar: string;
   bio?: string;
   checkmarks?: CheckmarkType[];
-  reactions?: { [key in ReactionType]: number };
 
   amFollowing?: boolean;
 };
@@ -33,5 +32,6 @@ export type Post = {
   author: User;
   postedAt: Date;
 
-  comments: Comment[];
+  replies: Comment[];
+  reactions?: { [key in ReactionType]: number };
 };

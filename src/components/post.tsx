@@ -33,9 +33,9 @@ export default function PostCard({ post }: { post: Post }) {
         )}
         <div className="mt-3 space-y-2">{post.content}</div>
       </div>
-      <AddComment postId={post.id} />
-      {post.comments.map((comment) => (
-        <Comment key={comment.id} comment={comment} />
+      <AddComment parentId={post.id} />
+      {post.replies?.map((reply) => (
+        <Comment key={reply.id} comment={reply} />
       ))}
     </article>
   );

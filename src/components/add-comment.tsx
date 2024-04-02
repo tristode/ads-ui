@@ -5,21 +5,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
 
 export interface AddCommentArgs {
-  postId: string;
+  parentId: string;
   content: string;
 }
 
-export default function AddComment({ postId }: { postId: string }) {
+export default function AddComment({ parentId }: { parentId: string }) {
   const [content, setContent] = useState("");
   const session = useAuthSession();
 
-  const addComment = async ({ postId, content }: AddCommentArgs) => {
-    console.log(`Adding comment to post ${postId}: ${content}`);
+  const addComment = async ({ parentId, content }: AddCommentArgs) => {
+    console.log(`Adding comment to post ${parentId}: ${content}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addComment({ postId, content });
+    addComment({ parentId, content });
     setContent("");
   };
 

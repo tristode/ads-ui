@@ -42,7 +42,7 @@ function App() {
             checkmarks: ["twitter", "discord", "moderator"],
           },
           postedAt: new Date(),
-          comments: [
+          replies: [
             {
               id: "1",
               content: "This is a comment",
@@ -65,6 +65,30 @@ function App() {
                 checkmarks: ["twitter"],
               },
               postedAt: new Date(),
+              replies: [
+                {
+                  id: "3",
+                  content: "This is a reply",
+                  author: {
+                    id: "3",
+                    name: "John Doe",
+                    avatar: "https://picsum.photos/40/40?random=3",
+                    checkmarks: ["twitter"],
+                  },
+                  postedAt: new Date(),
+                },
+                {
+                  id: "2",
+                  content: "This is another reply",
+                  author: {
+                    id: "3",
+                    name: "John Doe",
+                    avatar: "https://picsum.photos/40/40?random=3",
+                    checkmarks: ["twitter"],
+                  },
+                  postedAt: new Date(),
+                },
+              ],
             },
           ],
         }}
