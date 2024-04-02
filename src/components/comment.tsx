@@ -33,7 +33,13 @@ export default function CommentCard({ comment }: { comment: Comment }) {
           Share
         </button>
       </div>
-      {replying && <AddComment parentId={comment.id} />}
+      {replying && (
+        <AddComment
+          parentId={comment.id}
+          parentAuthorHandle={comment.author.handle}
+          onCancel={() => setReplying(false)}
+        />
+      )}
       {comment.replies && (
         <div className="pl-2 mt-3 border-l-2 border-gray-200 dark:border-gray-700">
           {comment.replies.map((reply) => (

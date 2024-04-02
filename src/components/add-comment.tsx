@@ -1,6 +1,6 @@
 import useAuthSession from "@/lib/auth";
 import { useState } from "react";
-import { MdSend } from "react-icons/md";
+import { MdClose, MdSend } from "react-icons/md";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
 
@@ -9,7 +9,15 @@ export interface AddCommentArgs {
   content: string;
 }
 
-export default function AddComment({ parentId }: { parentId: string }) {
+export default function AddComment({
+  parentId,
+  parentAuthorHandle,
+  onCancel,
+}: {
+  parentId: string;
+  parentAuthorHandle?: string;
+  onCancel?: () => void;
+}) {
   const [content, setContent] = useState("");
   const session = useAuthSession();
 
@@ -25,8 +33,19 @@ export default function AddComment({ parentId }: { parentId: string }) {
 
   return (
     session && (
-      <form onSubmit={handleSubmit} className="p-4">
-        <div className="rounded-lg overflow-hidden flex flex-row items-stretch bg-gray-200 dark:bg-gray-600">
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-t-lg sm:rounded-lg overflow-hidden bg-gray-300 dark:bg-gray-600 sm:bg-transparent fixed sm:static bottom-0 left-0 right-0 z-10"
+      >
+        {parentAuthorHandle && (
+          <div className="text-sm text-gray-500 dark:text-gray-400 p-2 sm:hidden flex items-center justify-between">
+            <span>Replying to @{parentAuthorHandle}</span>
+            {onCancel && (
+              <MdClose className="cursor-pointer" onClick={onCancel} />
+            )}
+          </div>
+        )}
+        <div className="rounded-lg overflow-hidden flex flex-row items-stretch bg-gray-300 sm:bg-gray-200 dark:bg-gray-600">
           <span className="p-2">
             <Avatar className="w-6 h-6">
               <AvatarImage
@@ -43,11 +62,11 @@ export default function AddComment({ parentId }: { parentId: string }) {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Add a comment..."
-            className="w-full bg-gray-200 dark:bg-gray-600 rounded-none border-none min-h-4 resize-none"
+            className="w-full bg-gray-300 sm:bg-gray-200 dark:bg-gray-600 rounded-none border-none min-h-6 sm:min-h-4 resize-none"
           />
           <button
             type="submit"
-            className="p-2 rounded-none bg-gray-200 dark:bg-gray-600"
+            className="p-2 rounded-none bg-gray-300 sm:bg-gray-200 dark:bg-gray-600"
           >
             <MdSend />
           </button>
