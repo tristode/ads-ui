@@ -11,10 +11,13 @@ function App() {
       <Invite
         link="https://discord.gg/mnwByZAS"
         title="УКУ: Прикладні науки"
-        icon="https://cdn.discordapp.com/icons/1015001493780320327/25afdfbde6ce874799f812cc9d042889.webp?size=56"
-        preamble="А ви знали, що ФПН має діскорд-сервер?"
+        icon="/logo.png"
         notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
-      />
+      >
+        <p className="text-sm text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
+          ФПН має діскорд-сервер :3
+        </p>
+      </Invite>
       <Post
         post={{
           id: "1",
