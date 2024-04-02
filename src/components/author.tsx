@@ -39,18 +39,18 @@ export default function Author({
               <AvatarImage alt={user.name} src={user.avatar} />
               <AvatarFallback>{user.name[0]}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col gap-0">
-                <div className="flex items-center space-x-2">
-                  <span className="font-bold">{user.name}</span>
+            <div className="flex flex-col gap-0">
+              <div className="flex items-center space-x-2">
+                <span className="font-bold">{user.name}</span>
+                <div className="flex flex-row gap-0">
                   {user.checkmarks?.map((type) => (
                     <Checkmark key={type} type={type} />
                   ))}
                 </div>
-                <span className="font-black text-xs text-gray-500">
-                  @{user.handle}
-                </span>
               </div>
+              <span className="font-black text-xs text-gray-500">
+                @{user.handle}
+              </span>
             </div>
           </div>
           {user.bio && (
