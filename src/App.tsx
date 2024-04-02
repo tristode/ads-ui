@@ -39,6 +39,7 @@ function App() {
             name: "John Doe",
             avatar: "https://picsum.photos/40/40?random=1",
             bio: "This is a bio",
+            checkmarks: ["twitter", "discord", "moderator"],
           },
           postedAt: new Date(),
           comments: [
@@ -49,6 +50,7 @@ function App() {
                 id: "2",
                 name: "Jane Doe",
                 avatar: "https://picsum.photos/40/40?random=2",
+                checkmarks: ["twitter"],
               },
               postedAt: new Date(),
             },
@@ -60,6 +62,7 @@ function App() {
                 name: "Jane Doe with bio",
                 avatar: "https://picsum.photos/40/40?random=2",
                 bio: "This is a bio",
+                checkmarks: ["twitter"],
               },
               postedAt: new Date(),
             },

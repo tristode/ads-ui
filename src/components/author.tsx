@@ -6,6 +6,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Button } from "./ui/button";
+import Checkmark from "./ui/checkmark";
 
 export default function Author({
   user,
@@ -23,6 +24,11 @@ export default function Author({
         </Avatar>
         <span className="font-bold whitespace-nowrap overflow-hidden text-ellipsis">
           {user.name}
+        </span>
+        <span className="flex flex-row gap-0">
+          {user.checkmarks?.map((type) => (
+            <Checkmark key={type} type={type} />
+          ))}
         </span>
         {children}
       </HoverCardTrigger>

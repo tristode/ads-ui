@@ -1,8 +1,11 @@
+export type CheckmarkType = "twitter" | "discord" | "moderator";
+
 export type User = {
   id: string;
   name: string;
   avatar: string;
   bio?: string;
+  checkmarks?: CheckmarkType[];
 };
 
 export type Comment = {
