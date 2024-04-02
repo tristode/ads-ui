@@ -13,6 +13,8 @@ export type User = {
 
 export type Comment = {
   id: string;
+  permalink: string;
+
   content: string;
 
   author: User;
@@ -20,10 +22,13 @@ export type Comment = {
 
   replies?: Comment[];
   reactions?: { [key in ReactionType]: number };
+  reactedByLoggedInUser?: ReactionType[];
 };
 
 export type Post = {
   id: string;
+  permalink: string;
+
   title: string;
   badges?: string[];
   content: string;
@@ -34,4 +39,5 @@ export type Post = {
 
   replies: Comment[];
   reactions?: { [key in ReactionType]: number };
+  reactedByLoggedInUser?: ReactionType[];
 };

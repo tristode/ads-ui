@@ -1,11 +1,14 @@
 import { Comment } from "@/types";
 import { useState } from "react";
+import { FaHeart, FaReply } from "react-icons/fa";
+import { MdShare } from "react-icons/md";
 import AddComment from "./add-comment";
 import Author from "./author";
 import Timedelta from "./ui/timedelta";
 
 export default function CommentCard({ comment }: { comment: Comment }) {
   const [replying, setReplying] = useState(false);
+  const liked = comment.reactedByLoggedInUser?.includes("like");
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800">
@@ -13,17 +16,20 @@ export default function CommentCard({ comment }: { comment: Comment }) {
         <Timedelta dateTime={comment.postedAt} />
       </Author>
       <div className="pl-8 mt-3">{comment.content}</div>
-      <div className="flex items-center mt-3 pl-8 space-x-2">
-        <button
-          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-          onClick={() => setReplying(!replying)}
-        >
-          Reply
-        </button>
-        <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+      <div className="flex items-center mt-3 pl-8 space-x-4 font-black">
+        <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
+          <FaHeart className={liked ? "text-red-500" : "text-gray-500"} />
           Like
         </button>
-        <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+        <button
+          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1"
+          onClick={() => setReplying(!replying)}
+        >
+          <FaReply className="text-gray-500" />
+          Reply
+        </button>
+        <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
+          <MdShare className="text-gray-500" />
           Share
         </button>
       </div>

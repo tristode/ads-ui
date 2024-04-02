@@ -4,9 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Post } from "@/types";
 import Author from "./author";
 import Timedelta from "./ui/timedelta";
+import { BsChatLeftFill } from "react-icons/bs";
 import AddComment from "./add-comment";
+import { FaHeart } from "react-icons/fa";
+import { MdShare } from "react-icons/md";
 
 export default function PostCard({ post }: { post: Post }) {
+  const liked = post.reactedByLoggedInUser?.includes("like");
+
   return (
     <article className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
       <div className="p-4 flex flex-col">
@@ -32,6 +37,27 @@ export default function PostCard({ post }: { post: Post }) {
           <Gallery images={post.images} />
         )}
         <div className="mt-3 space-y-2">{post.content}</div>
+      </div>
+      {/** Reactions - the like button mainly */}
+      <div className="p-4 flex justify-around">
+        <div className="flex flex-col items-center cursor-pointer">
+          <FaHeart className={liked ? "text-red-500" : "text-gray-500"} />
+          <span className="font-black text-xs text-gray-500 dark:text-gray-300">
+            {post.reactions?.like || 0}
+          </span>
+        </div>
+        <div className="flex flex-col items-center cursor-pointer">
+          <BsChatLeftFill className="text-gray-500" />
+          <span className="font-black text-xs text-gray-500 dark:text-gray-300">
+            {post.replies.length}
+          </span>
+        </div>
+        <div className="flex flex-col items-center cursor-pointer">
+          <MdShare className="text-gray-500" />
+          <span className="font-black text-xs text-gray-500 dark:text-gray-300">
+            Share
+          </span>
+        </div>
       </div>
       <AddComment parentId={post.id} />
       {post.replies?.map((reply) => (

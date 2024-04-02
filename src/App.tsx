@@ -21,6 +21,8 @@ function App() {
       <Post
         post={{
           id: "1",
+          permalink: "/post/1",
+
           title: "Hello World",
           badges: ["badge1", "badge2"],
           content: "This is a post content",
@@ -45,6 +47,7 @@ function App() {
           replies: [
             {
               id: "1",
+              permalink: "/post/1#comment-1",
               content: "This is a comment",
               author: {
                 id: "2",
@@ -56,6 +59,7 @@ function App() {
             },
             {
               id: "2",
+              permalink: "/post/1#comment-2",
               content: "This is a comment",
               author: {
                 id: "2",
@@ -68,6 +72,7 @@ function App() {
               replies: [
                 {
                   id: "3",
+                  permalink: "/post/1#comment-3",
                   content: "This is a reply",
                   author: {
                     id: "3",
@@ -79,6 +84,7 @@ function App() {
                 },
                 {
                   id: "2",
+                  permalink: "/post/1#comment-4",
                   content: "This is another reply",
                   author: {
                     id: "3",
