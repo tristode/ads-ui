@@ -15,7 +15,10 @@ const Timedelta = React.forwardRef<HTMLTimeElement, TimedeltaProps>(
     return (
       <time
         ref={ref}
-        className={cn("text-sm text-gray-500", className)}
+        className={cn(
+          "text-sm text-gray-500 whitespace-nowrap text-ellipsis overflow-hidden",
+          className
+        )}
         {...props}
       >
         {formattedRelativeTime}

@@ -21,7 +21,9 @@ export default function Author({
           <AvatarImage alt={user.name} src={user.avatar} />
           <AvatarFallback>{user.name[0]}</AvatarFallback>
         </Avatar>
-        <span className="font-bold">{user.name}</span>
+        <span className="font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+          {user.name}
+        </span>
         {children}
       </HoverCardTrigger>
       <HoverCardContent align="start">

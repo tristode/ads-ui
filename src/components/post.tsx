@@ -10,7 +10,7 @@ export default function PostCard({ post }: { post: Post }) {
   return (
     <article className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
       <div className="p-4 flex flex-col">
-        <div className="flex space-around items-center">
+        <div className="flex flex-wrap space-around items-center">
           <Author user={post.author}>
             <Timedelta dateTime={post.postedAt} />
           </Author>
