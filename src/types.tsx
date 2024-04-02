@@ -14,6 +14,8 @@ export type Comment = {
 
   author: User;
   postedAt: Date;
+
+  replies?: Comment[];
 };
 
 export type Post = {
