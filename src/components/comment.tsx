@@ -1,16 +1,16 @@
 import { signIn, useAuthSession } from "@/lib/auth";
 import { Comment } from "@/types";
-import { useState } from "react";
 import { FaHeart, FaReply } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
 import AddComment from "./add-comment";
 import Author from "./author";
+import { useReplying } from "./single-reply-box-provider";
 import Timedelta from "./ui/timedelta";
 
 export default function CommentCard({ comment }: { comment: Comment }) {
   const session = useAuthSession();
-  const [replying, setReplying] = useState(false);
   const liked = comment.reactedByLoggedInUser?.includes("like");
+  const replying = useReplying();
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800">
@@ -27,7 +27,9 @@ export default function CommentCard({ comment }: { comment: Comment }) {
           className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1"
           onClick={() =>
             session
-              ? setReplying(!replying)
+              ? replying.setParentId(
+                  comment.id === replying.parentId ? undefined : comment.id
+                )
               : signIn(
                   new URL(comment.permalink, window.location.origin).toString()
                 )
@@ -41,11 +43,12 @@ export default function CommentCard({ comment }: { comment: Comment }) {
           Share
         </button>
       </div>
-      {replying && (
+      {replying.parentId === comment.id && (
         <AddComment
           parentId={comment.id}
           parentAuthorHandle={comment.author.handle}
-          onCancel={() => setReplying(false)}
+          onCancel={() => replying.setParentId(undefined)}
+          className="mt-6"
         />
       )}
       {comment.replies && (

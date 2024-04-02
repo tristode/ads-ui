@@ -8,9 +8,11 @@ import { BsChatLeftFill } from "react-icons/bs";
 import AddComment from "./add-comment";
 import { FaHeart } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
+import { useReplying } from "./single-reply-box-provider";
 
 export default function PostCard({ post }: { post: Post }) {
   const liked = post.reactedByLoggedInUser?.includes("like");
+  const replying = useReplying();
 
   return (
     <article className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
@@ -46,7 +48,10 @@ export default function PostCard({ post }: { post: Post }) {
             {post.reactions?.like || 0}
           </span>
         </div>
-        <div className="flex flex-col items-center cursor-pointer">
+        <div
+          className="flex flex-col items-center cursor-pointer"
+          onClick={() => replying.setParentId(post.id)}
+        >
           <BsChatLeftFill className="text-gray-500" />
           <span className="font-black text-xs text-gray-500 dark:text-gray-300">
             {post.replies.length}
@@ -59,7 +64,9 @@ export default function PostCard({ post }: { post: Post }) {
           </span>
         </div>
       </div>
-      <AddComment parentId={post.id} />
+      {(post.id === replying.parentId || !replying.parentId) && (
+        <AddComment parentId={post.id} />
+      )}
       {post.replies?.map((reply) => (
         <Comment key={reply.id} comment={reply} />
       ))}

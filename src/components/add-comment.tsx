@@ -1,4 +1,5 @@
 import { useAuthSession } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { MdClose, MdSend } from "react-icons/md";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -13,10 +14,12 @@ export default function AddComment({
   parentId,
   parentAuthorHandle,
   onCancel,
+  className,
 }: {
   parentId: string;
   parentAuthorHandle?: string;
   onCancel?: () => void;
+  className?: string;
 }) {
   const [content, setContent] = useState("");
   const session = useAuthSession();
@@ -35,7 +38,10 @@ export default function AddComment({
     session && (
       <form
         onSubmit={handleSubmit}
-        className="rounded-t-lg sm:rounded-lg overflow-hidden bg-gray-300 dark:bg-gray-600 sm:bg-transparent fixed sm:static bottom-0 left-0 right-0 z-10"
+        className={cn(
+          "rounded-t-lg sm:rounded-lg overflow-hidden bg-gray-300 dark:bg-gray-600 sm:bg-transparent fixed sm:static bottom-0 left-0 right-0 z-10",
+          className
+        )}
       >
         {parentAuthorHandle && (
           <div className="text-sm text-gray-500 dark:text-gray-400 p-2 sm:hidden flex items-center justify-between">
