@@ -24,23 +24,23 @@ export default function Author({
         <span className="font-bold">{user.name}</span>
         {children}
       </HoverCardTrigger>
-      {user.bio && (
-        <HoverCardContent align="start">
-          <div className="flex items-start space-x-2">
-            <Avatar className="w-8 h-8">
-              <AvatarImage alt={user.name} src={user.avatar} />
-              <AvatarFallback>{user.name[0]}</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="font-bold">{user.name}</span>
+      <HoverCardContent align="start">
+        <div className="flex items-start space-x-2">
+          <Avatar className="w-8 h-8">
+            <AvatarImage alt={user.name} src={user.avatar} />
+            <AvatarFallback>{user.name[0]}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <span className="font-bold">{user.name}</span>
+            {user.bio && (
               <span className="text-sm text-gray-500">{user.bio}</span>
-              <Button variant="accent" size="sm" className="font-bold">
-                Follow
-              </Button>
-            </div>
+            )}
+            <Button variant="accent" size="sm" className="font-bold">
+              Follow
+            </Button>
           </div>
-        </HoverCardContent>
-      )}
+        </div>
+      </HoverCardContent>
     </HoverCard>
   );
 }
