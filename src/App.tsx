@@ -14,7 +14,7 @@ function App() {
         icon="/logo.png"
         notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
       >
-        <p className="text-sm text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
+        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
           ФПН має діскорд-сервер :3
         </p>
       </Invite>

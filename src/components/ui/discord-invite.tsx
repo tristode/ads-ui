@@ -16,8 +16,8 @@ export default function DiscordInvite({
   children?: ReactNode;
 }) {
   return (
-    <div className="bg-zinc-700/70 rounded p-4 w-96 min-w-10 flex flex-col max-w-full">
-      <div className="font-bold mb-3 whitespace-nowrap text-ellipsis overflow-hidden text-gray-400 uppercase font-sans text-xs">
+    <div className="text-black dark:text-white bg-zinc-200 dark:bg-zinc-700/70 rounded p-4 w-96 min-w-10 flex flex-col max-w-full">
+      <div className="font-bold mb-3 whitespace-nowrap text-ellipsis overflow-hidden text-gray-600 dark:text-gray-400 uppercase font-sans text-xs">
         You've been invited to join a server
       </div>
       <div className="flex flex-row flex-wrap gap-4">
@@ -47,7 +47,7 @@ export default function DiscordInvite({
               </span>
             </div>
             {(online || total) && (
-              <div className="flex flex-row gap-3 items-center text-sm font-normal text-gray-400">
+              <div className="flex flex-row gap-3 items-center text-sm font-normal text-gray-600 dark:text-gray-400">
                 {online && (
                   <span className="flex items-center gap-1">
                     <span className="bg-green-600 rounded-full w-2 h-2" />

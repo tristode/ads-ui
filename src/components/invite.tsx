@@ -21,7 +21,9 @@ export default function Invite({
 }) {
   return (
     <div className="p-4 flex flex-col gap-1 items-start justify-center">
-      {preamble && <p className="text-sm text-gray-400">{preamble}</p>}
+      {preamble && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">{preamble}</p>
+      )}
       <DiscordInvite
         name={title}
         icon={icon}
@@ -31,7 +33,9 @@ export default function Invite({
       >
         {children}
       </DiscordInvite>
-      {notice && <p className="text-sm text-gray-400">{notice}</p>}
+      {notice && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">{notice}</p>
+      )}
     </div>
   );
 }
