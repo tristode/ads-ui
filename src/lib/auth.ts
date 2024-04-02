@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
-export default function useAuthSession(): Session | null {
+export function signIn() {
+  supabase.auth.signInWithOAuth({ provider: "google" });
+}
+
+export function useAuthSession(): Session | null {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {

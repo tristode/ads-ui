@@ -1,3 +1,4 @@
+import { signIn, useAuthSession } from "@/lib/auth";
 import { Comment } from "@/types";
 import { useState } from "react";
 import { FaHeart, FaReply } from "react-icons/fa";
@@ -7,6 +8,7 @@ import Author from "./author";
 import Timedelta from "./ui/timedelta";
 
 export default function CommentCard({ comment }: { comment: Comment }) {
+  const session = useAuthSession();
   const [replying, setReplying] = useState(false);
   const liked = comment.reactedByLoggedInUser?.includes("like");
 
@@ -23,7 +25,7 @@ export default function CommentCard({ comment }: { comment: Comment }) {
         </button>
         <button
           className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1"
-          onClick={() => setReplying(!replying)}
+          onClick={() => (session ? setReplying(!replying) : signIn())}
         >
           <FaReply className="text-gray-500" />
           Reply

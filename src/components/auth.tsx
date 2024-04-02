@@ -1,8 +1,8 @@
-import useAuthSession from "@/lib/auth";
 import { FaCog, FaGoogle } from "react-icons/fa";
 import { supabase } from "@/lib/supabase";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useAuthSession } from "@/lib/auth";
 
 export default function Auth() {
   const session = useAuthSession();

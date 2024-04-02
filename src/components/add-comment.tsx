@@ -1,4 +1,4 @@
-import useAuthSession from "@/lib/auth";
+import { useAuthSession } from "@/lib/auth";
 import { useState } from "react";
 import { MdClose, MdSend } from "react-icons/md";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
