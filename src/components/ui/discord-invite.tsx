@@ -16,7 +16,7 @@ export default function DiscordInvite({
   children?: ReactNode;
 }) {
   return (
-    <div className="text-black dark:text-white bg-zinc-200 dark:bg-zinc-700/70 rounded p-4 w-96 min-w-10 flex flex-col max-w-full">
+    <div className="text-black dark:text-white bg-zinc-200 dark:bg-zinc-700/70 rounded p-4 w-96 min-w-10 flex flex-col max-w-full cursor-default">
       <div className="font-bold mb-3 whitespace-nowrap text-ellipsis overflow-hidden text-gray-600 dark:text-gray-400 uppercase font-sans text-xs">
         You've been invited to join a server
       </div>
