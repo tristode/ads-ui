@@ -1,4 +1,5 @@
 export type CheckmarkType = "twitter" | "discord" | "moderator";
+export type ReactionType = "like";
 
 export type User = {
   id: string;
@@ -6,6 +7,9 @@ export type User = {
   avatar: string;
   bio?: string;
   checkmarks?: CheckmarkType[];
+  reactions?: { [key in ReactionType]: number };
+
+  amFollowing?: boolean;
 };
 
 export type Comment = {
@@ -16,6 +20,7 @@ export type Comment = {
   postedAt: Date;
 
   replies?: Comment[];
+  reactions?: { [key in ReactionType]: number };
 };
 
 export type Post = {

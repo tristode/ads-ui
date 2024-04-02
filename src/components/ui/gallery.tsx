@@ -35,7 +35,7 @@ function FullScreenableImage({ src, alt }: { src: string; alt: string }) {
 }
 
 export default function Gallery({ images }: { images: string[] }) {
-  const grid_template_areas = {
+  const gridTemplateAreas = {
     1: "'a'",
     2: "'a b'",
     3: "'a b' 'a c'",
@@ -47,7 +47,7 @@ export default function Gallery({ images }: { images: string[] }) {
     9: "'a b c' 'd e f' 'g h i'",
   }[images.length];
 
-  if (!grid_template_areas) {
+  if (!gridTemplateAreas) {
     return (
       <div className="mt-3 h-[200px] bg-gray-200 rounded-lg flex justify-center items-center">
         <span className="text-red-500">Too many images to display</span>
@@ -55,7 +55,7 @@ export default function Gallery({ images }: { images: string[] }) {
     );
   }
 
-  const aspect_ratio = {
+  const aspectRatio = {
     1: "1/1",
     2: "2/3",
     3: "2/3",
@@ -71,8 +71,8 @@ export default function Gallery({ images }: { images: string[] }) {
     <div
       className="mt-3 bg-gray-200 rounded-lg justify-center items-center overflow-hidden grid gap-0"
       style={{
-        gridTemplateAreas: grid_template_areas,
-        aspectRatio: aspect_ratio,
+        gridTemplateAreas: gridTemplateAreas,
+        aspectRatio: aspectRatio,
       }}
     >
       {images.map((image, index) => (
