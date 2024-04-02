@@ -25,7 +25,13 @@ export default function CommentCard({ comment }: { comment: Comment }) {
         </button>
         <button
           className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1"
-          onClick={() => (session ? setReplying(!replying) : signIn())}
+          onClick={() =>
+            session
+              ? setReplying(!replying)
+              : signIn(
+                  new URL(comment.permalink, window.location.origin).toString()
+                )
+          }
         >
           <FaReply className="text-gray-500" />
           Reply

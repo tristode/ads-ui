@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
-export function signIn() {
-  supabase.auth.signInWithOAuth({ provider: "google" });
+export function signIn(redirectTo?: string) {
+  supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo },
+  });
 }
 
 export function useAuthSession(): Session | null {
