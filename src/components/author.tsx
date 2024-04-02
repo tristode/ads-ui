@@ -5,6 +5,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Button } from "./ui/button";
 
 export default function Author({
   user,
@@ -33,6 +34,9 @@ export default function Author({
             <div className="flex flex-col">
               <span className="font-bold">{user.name}</span>
               <span className="text-sm text-gray-500">{user.bio}</span>
+              <Button variant="accent" size="sm" className="font-bold">
+                Follow
+              </Button>
             </div>
           </div>
         </HoverCardContent>
