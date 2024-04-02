@@ -3,6 +3,7 @@ export type ReactionType = "like";
 
 export type User = {
   id: string;
+  handle: string;
   name: string;
   avatar: string;
   bio?: string;

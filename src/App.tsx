@@ -38,6 +38,7 @@ function App() {
           ],
           author: {
             id: "1",
+            handle: "johndoe",
             name: "John Doe",
             avatar: "https://picsum.photos/40/40?random=1",
             bio: "This is a bio",
@@ -51,6 +52,7 @@ function App() {
               content: "This is a comment",
               author: {
                 id: "2",
+                handle: "janedoe",
                 name: "Jane Doe",
                 avatar: "https://picsum.photos/40/40?random=2",
                 checkmarks: ["twitter"],
@@ -63,6 +65,7 @@ function App() {
               content: "This is a comment",
               author: {
                 id: "2",
+                handle: "janedoe",
                 name: "Jane Doe with bio",
                 avatar: "https://picsum.photos/40/40?random=2",
                 bio: "This is a bio",
@@ -76,6 +79,7 @@ function App() {
                   content: "This is a reply",
                   author: {
                     id: "3",
+                    handle: "johndoe",
                     name: "John Doe",
                     avatar: "https://picsum.photos/40/40?random=3",
                     checkmarks: ["twitter"],
@@ -88,6 +92,7 @@ function App() {
                   content: "This is another reply",
                   author: {
                     id: "3",
+                    handle: "johndoe",
                     name: "John Doe",
                     avatar: "https://picsum.photos/40/40?random=3",
                     checkmarks: ["twitter"],

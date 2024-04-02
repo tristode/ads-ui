@@ -33,20 +33,32 @@ export default function Author({
         {children}
       </HoverCardTrigger>
       <HoverCardContent align="start">
-        <div className="flex items-start space-x-2">
-          <Avatar className="w-8 h-8">
-            <AvatarImage alt={user.name} src={user.avatar} />
-            <AvatarFallback>{user.name[0]}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span className="font-bold">{user.name}</span>
-            {user.bio && (
-              <span className="text-sm text-gray-500">{user.bio}</span>
-            )}
-            <Button variant="accent" size="sm" className="font-bold">
-              Follow
-            </Button>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-start space-x-2">
+            <Avatar className="w-12 h-12">
+              <AvatarImage alt={user.name} src={user.avatar} />
+              <AvatarFallback>{user.name[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-0">
+                <div className="flex items-center space-x-2">
+                  <span className="font-bold">{user.name}</span>
+                  {user.checkmarks?.map((type) => (
+                    <Checkmark key={type} type={type} />
+                  ))}
+                </div>
+                <span className="font-black text-xs text-gray-500">
+                  @{user.handle}
+                </span>
+              </div>
+            </div>
           </div>
+          {user.bio && (
+            <span className="text-sm text-gray-500">{user.bio}</span>
+          )}
+          <Button variant="accent" size="sm" className="font-bold w-full">
+            Follow
+          </Button>
         </div>
       </HoverCardContent>
     </HoverCard>
