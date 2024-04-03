@@ -28,6 +28,9 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
       }
     };
 
+    // This function in fact is not always declared - it exists on mobile devices,
+    // but not on desktops. We need to silence typescript:
+    // @ts-ignore
     return navigator.share ? (
       <Button ref={ref} onClick={share} {...props} />
     ) : (
