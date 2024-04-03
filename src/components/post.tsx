@@ -60,7 +60,7 @@ export default function PostCard({
         >
           <BsChatLeftFill className="text-gray-500" />
           <span className="font-black text-xs text-gray-500 dark:text-gray-300">
-            {post.replies.length}
+            {post.replyCount || post.replies.length}
           </span>
         </div>
         <div className="flex flex-col items-center cursor-pointer w-full">

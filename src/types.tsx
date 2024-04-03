@@ -39,6 +39,7 @@ export type Post = {
   postedAt: Date;
 
   replies: Comment[];
+  replyCount?: number;
   reactions?: { [key in ReactionType]: number };
   reactedByLoggedInUser?: ReactionType[];
 };
