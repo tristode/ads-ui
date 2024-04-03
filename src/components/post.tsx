@@ -9,6 +9,7 @@ import AddComment from "./add-comment";
 import { FaHeart } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
 import { useReplying } from "./single-reply-box-provider";
+import { ShareButton } from "./ui/share-button";
 
 export default function PostCard({
   post,
@@ -63,12 +64,21 @@ export default function PostCard({
             {post.replyCount || post.replies.length}
           </span>
         </div>
-        <div className="flex flex-col items-center cursor-pointer w-full">
-          <MdShare className="text-gray-500" />
-          <span className="font-black text-xs text-gray-500 dark:text-gray-300">
-            Share
-          </span>
-        </div>
+        <ShareButton
+          shareUrl={new URL(post.permalink, window.location.origin).href}
+          variant="none"
+          size="none"
+          styling="unstyled"
+          title={post.title}
+          asChild
+        >
+          <div className="flex flex-col items-center cursor-pointer w-full">
+            <MdShare className="text-gray-500" />
+            <span className="font-black text-xs text-gray-500 dark:text-gray-300">
+              Share
+            </span>
+          </div>
+        </ShareButton>
       </div>
       <AddComment
         parentId={post.id}

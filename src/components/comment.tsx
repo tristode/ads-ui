@@ -5,6 +5,7 @@ import { MdShare } from "react-icons/md";
 import AddComment from "./add-comment";
 import Author from "./author";
 import { useReplying } from "./single-reply-box-provider";
+import { ShareButton } from "./ui/share-button";
 import Timedelta from "./ui/timedelta";
 
 export default function CommentCard({ comment }: { comment: Comment }) {
@@ -38,10 +39,19 @@ export default function CommentCard({ comment }: { comment: Comment }) {
           <FaReply className="text-gray-500" />
           Reply
         </button>
-        <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
-          <MdShare className="text-gray-500" />
-          Share
-        </button>
+        <ShareButton
+          shareUrl={new URL(comment.permalink, window.location.origin).href}
+          variant="none"
+          size="none"
+          styling="unstyled"
+          title={comment.content}
+          asChild
+        >
+          <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
+            <MdShare className="text-gray-500" />
+            Share
+          </button>
+        </ShareButton>
       </div>
       {replying.parentId === comment.id && (
         <AddComment
