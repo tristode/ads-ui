@@ -1,14 +1,10 @@
 import { useAuthSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { AddCommentArgs } from "@/types";
 import { useState } from "react";
 import { MdClose, MdSend } from "react-icons/md";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
-
-export interface AddCommentArgs {
-  parentId: string;
-  content: string;
-}
 
 export default function AddComment({
   parentId,

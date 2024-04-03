@@ -1,6 +1,11 @@
 export type CheckmarkType = "twitter" | "discord" | "moderator";
 export type ReactionType = "like";
 
+export interface AddCommentArgs {
+  parentId: string;
+  content: string;
+}
+
 export type User = {
   id: string;
   handle: string;
