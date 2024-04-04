@@ -1,11 +1,45 @@
 import { AddCommentArgs, Comment, Post } from "@/types";
 import { useAuthSession } from "./auth";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { User } from "../types";
 import { NewPostForm } from "@/types";
 import { z } from "zod";
 import { Session } from "@supabase/supabase-js";
+
+type Cache = {
+  users: Record<string, User>;
+  setUsers: (
+    users:
+      | ((users: Record<string, User>) => Record<string, User>)
+      | Record<string, User>
+  ) => void;
+};
+
+const cache: Cache = {
+  users: {},
+  setUsers: () => null,
+};
+
+const CacheContext = createContext<Cache>(cache);
+
+export const DataProvider = ({ children }: { children: React.ReactNode }) => {
+  const [users, setUsers] = useState<Record<string, User>>({});
+
+  return (
+    <CacheContext.Provider value={{ users, setUsers }}>
+      {children}
+    </CacheContext.Provider>
+  );
+};
+
+const useCache = () => {
+  const context = useContext(CacheContext);
+  if (!context) {
+    throw new Error("useCache must be used within a DataProvider");
+  }
+  return context;
+};
 
 export const usePostPreview = (postId: string): Post | null => {
   const [post, setPost] = useState<Post | null>(null);
@@ -176,11 +210,17 @@ export const useComment = (commentId: string): Comment | null => null;
 export const useUser = (userId: string): User | null => {
   const session = useAuthSession();
   const [user, setUser] = useState<User | null>(null);
+  const { users, setUsers } = useCache();
 
   useEffect(() => {
     const fetcher = async () => {
+      if (users[userId]) {
+        setUser(users[userId]);
+        return;
+      }
       const retrieved = await fetchUser(userId, session).catch(console.error);
       retrieved && setUser(retrieved);
+      retrieved && setUsers((users) => ({ ...users, [userId]: retrieved }));
     };
     fetcher();
   }, [userId, session]);

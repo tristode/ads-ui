@@ -20,12 +20,16 @@ export type Chat = {
 
 type ChatsState = {
   chats: Chat[];
+  chatMembers: Record<string, string[]>;
   setChats: (chats: Chat[]) => void;
+  setChatMembers: (members: Record<string, string[]>) => void;
 };
 
 const initialState: ChatsState = {
   chats: [],
+  chatMembers: {},
   setChats: () => null,
+  setChatMembers: () => null,
 };
 
 const ChatsContext = createContext<ChatsState>(initialState);
@@ -77,6 +81,7 @@ export function ChatsProvider({
   ...props
 }: React.PropsWithChildren<{}>) {
   const [chats, setChats] = useState<Chat[]>([]);
+  const [chatMembers, setChatMembers] = useState<Record<string, string[]>>({});
   const session = useAuthSession();
 
   useEffect(() => {
@@ -89,7 +94,9 @@ export function ChatsProvider({
 
   const value = {
     chats: chats,
+    chatMembers: chatMembers,
     setChats: setChats,
+    setChatMembers: setChatMembers,
   };
 
   return (
@@ -122,9 +129,14 @@ const fetchChatMembers = async (chatId: string): Promise<string[] | null> => {
 const useChatMembers = (chatId: string): string[] => {
   const session = useAuthSession();
   const [members, setMembers] = useState<string[]>([]);
+  const { chatMembers, setChatMembers } = useChats();
 
   useEffect(() => {
     const fetcher = async () => {
+      if (chatMembers[chatId]) {
+        setMembers(chatMembers[chatId]);
+        return;
+      }
       const members = await fetchChatMembers(chatId);
 
       if (!members) return;
@@ -132,8 +144,13 @@ const useChatMembers = (chatId: string): string[] => {
       if (session && members && !members.includes(session.user.id)) {
         await joinChat(session, chatId);
         setMembers([...members, session.user.id]);
+        setChatMembers({
+          ...chatMembers,
+          [chatId]: [...members, session.user.id],
+        });
       } else {
         setMembers(members);
+        setChatMembers({ ...chatMembers, [chatId]: members });
       }
     };
     fetcher();
