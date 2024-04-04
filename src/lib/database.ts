@@ -3,11 +3,11 @@ import { useAuthSession } from "./auth";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { User } from "../types";
-import { Session } from "@supabase/supabase-js";
+import { NewPostForm } from "@/types";
 import { z } from "zod";
 
 // To use "useAuthSession" from "./auth.ts"
-export const usePostPreview = (postId: string): Post | null {
+export const usePostPreview = (postId: string): Post | null => {
     const [post, setPost] = useState<Post | null>(null);
 
     useEffect(() => {
@@ -166,3 +166,20 @@ export const setLike = (postId: string): void => undefined;
 export const reply = (parentId: string, args: AddCommentArgs): void =>
     undefined;
 
+export const createPost = (post: NewPostForm) => {
+    const session = useAuthSession();
+    if (!session) { return; }
+
+    const { error } = await supabase
+        .from("Posts")
+        .insert({
+            title: post.title,
+            badges: post.badges ?? [],
+            content: post.content,
+            images: post.images ?? [],
+            author: post.author.id,
+            postedAt: post.postedAt,
+        })
+
+    if (error) { console.error("Failed to upload post: ", error); }
+}

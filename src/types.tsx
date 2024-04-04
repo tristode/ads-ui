@@ -48,3 +48,13 @@ export type Post = {
     reactions?: { [key in ReactionType]: number };
     reactedByLoggedInUser?: ReactionType[];
 };
+
+export type NewPostForm = {
+    title: string;
+    badges?: string[];
+    content: string;
+    images?: string[];
+
+    author: User;
+    postedAt: Date;
+};
