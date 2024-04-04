@@ -57,11 +57,11 @@ export default function Gallery({ images }: { images: string[] }) {
 
   const aspectRatio = {
     1: "1/1",
-    2: "2/3",
-    3: "2/3",
+    2: "3/2",
+    3: "3/2",
     4: "1/1",
-    5: "3/4",
-    6: "3/4",
+    5: "4/3",
+    6: "4/3",
     7: "1/1",
     8: "1/1",
     9: "1/1",
