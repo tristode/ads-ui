@@ -1,4 +1,5 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
+import { FaMessage } from "react-icons/fa6";
 import { User } from "@/types";
 import {
   HoverCard,
@@ -7,6 +8,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Button } from "./ui/button";
 import Checkmark from "./ui/checkmark";
+import { useChatCreatorWithUser } from "@/lib/chat";
 
 export default function Author({
   user,
@@ -15,6 +17,8 @@ export default function Author({
   user: User;
   children?: React.ReactNode;
 }) {
+  const createChat = useChatCreatorWithUser();
+
   return (
     <HoverCard>
       <HoverCardTrigger className="flex items-center space-x-2 cursor-pointer">
@@ -56,9 +60,21 @@ export default function Author({
           {user.bio && (
             <span className="text-sm text-gray-500">{user.bio}</span>
           )}
-          <Button variant="accent" size="sm" className="font-bold w-full">
-            Follow
-          </Button>
+          <div className="flex flex-row w-full gap-2">
+            <Button variant="accent" size="sm" className="font-bold w-full">
+              Follow
+            </Button>
+            <Button
+              variant="accent"
+              size="sm"
+              className="font-bold"
+              onClick={
+                () => createChat(null, user.id) // TODO: redirect to the chat
+              }
+            >
+              <FaMessage />
+            </Button>
+          </div>
         </div>
       </HoverCardContent>
     </HoverCard>
