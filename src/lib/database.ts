@@ -5,6 +5,7 @@ import { supabase } from "./supabase";
 import { User } from "../types";
 import { NewPostForm } from "@/types";
 import { z } from "zod";
+import { Session } from "@supabase/supabase-js";
 
 export const usePostPreview = (postId: string): Post | null => {
   const [post, setPost] = useState<Post | null>(null);
@@ -15,70 +16,75 @@ export const usePostPreview = (postId: string): Post | null => {
 
   const fetchPost = async () => {
     let { data: postData, error } = await supabase
-      .from("posts")
+      .from("Post")
       .select(
         `
                 *,
-                Users(*),
-                Comments(*),
-                PostLikes(*),
-                CommentLikes(*)
+                UserData!public_Post_author_fkey(*),
+                Comment(*),
+                PostLikes(*)
                 `
       )
-      .eq("Users.id", "author")
-      .or("Users.id.eq.Comments.id")
-      .eq("Comments.parentPost", "id")
-      .eq("PostLikes.postId", "id")
-      .eq("CommentLikes.commentId", "Comments.id")
-      .eq("Posts.id", postId)
+      // .or("Users.id.eq.Comments.id")
+      // .eq("Comment.parentPost", "id")
+      // .eq("PostLikes.postId", "id")
+      // .eq("CommentLikes.commentId", "Comment.id")
+      .eq("id", postId)
       .single();
 
     let parser = z.object({
       id: z.string(),
       title: z.string(),
-      badges: z.array(z.string()),
+      badges: z.array(z.string()).nullable().default(null),
       content: z.string(),
       images: z.array(z.string()),
       author: z.string(),
-      postedAt: z.date(),
-      Users: z.array(
-        z.object({
-          id: z.string(),
-          handle: z.string(),
-          name: z.string(),
-          bio: z.string(),
-          avatar: z.string(),
-        })
+      postedAt: z.preprocess(
+        (val) => (typeof val === "string" ? new Date(val) : val),
+        z.date()
       ),
-      Comments: z.array(
-        z.object({
-          id: z.string(),
-          content: z.string(),
-          author: z.string(),
-          postedAt: z.date(),
-        })
-      ),
-      PostLikes: z.array(
-        z.object({
-          postId: z.string(),
-          userId: z.string(),
-        })
-      ),
-      CommentLikes: z.array(
-        z.object({
-          commentId: z.string(),
-          userId: z.string(),
-        })
-      ),
+      UserData: z.object({
+        id: z.string(),
+        handle: z.string(),
+        name: z.string(),
+        bio: z.string(),
+        avatar: z.string(),
+      }),
+      Comments: z
+        .array(
+          z.object({
+            id: z.string(),
+            content: z.string(),
+            author: z.string(),
+            postedAt: z.date(),
+          })
+        )
+        .default([]),
+      PostLikes: z
+        .array(
+          z.object({
+            postId: z.string(),
+            userId: z.string(),
+          })
+        )
+        .nullable()
+        .default(null),
+      CommentLikes: z
+        .array(
+          z.object({
+            commentId: z.string(),
+            userId: z.string(),
+          })
+        )
+        .nullable()
+        .default(null),
     });
     let parsedData = parser.parse(postData);
 
     if (error) {
       console.error(error);
     }
-    const author = parsedData.Users.find(
-      (elem) => elem.id === parsedData.author
-    );
+    const author = parsedData.UserData;
     if (!postData || !author) {
       console.error("Could not fetch post data");
       return;
@@ -87,9 +93,7 @@ export const usePostPreview = (postId: string): Post | null => {
     const getReplies = (id: string): Comment[] =>
       parsedData.Comments.filter((comment) => comment.id == id)
         .map((comment): Comment | null => {
-          const author = parsedData.Users.find(
-            (elem) => elem.id === parsedData.author
-          );
+          const author = null; // TODO
           if (!author) {
             return null;
           }
@@ -107,7 +111,7 @@ export const usePostPreview = (postId: string): Post | null => {
     setPost({
       id: parsedData.id,
       title: parsedData.title,
-      badges: parsedData.badges,
+      badges: parsedData.badges ?? [],
       content: parsedData.content,
       images: parsedData.images,
       author: author,
@@ -120,7 +124,53 @@ export const usePostPreview = (postId: string): Post | null => {
   return post;
 };
 
-// Loads all comments
+const loggedInUserIsFollowing = async (
+  session: Session | null,
+  userId: string
+) => {
+  if (!session) {
+    return false;
+  }
+
+  const { data: amFollowing, error } = await supabase
+    .from("UserFollows")
+    .select()
+    .eq("follower", session.user.id)
+    .eq("followed", userId);
+
+  if (error) {
+    console.error("Error gettig user data: ", error);
+  }
+  if (error || !amFollowing?.length) {
+    return false;
+  }
+
+  return true;
+};
+
+const fetchUser = async (
+  userId: string,
+  session: Session | null
+): Promise<User | null> => {
+  if (!userId) {
+    return null;
+  }
+
+  const [{ data: userData, error }, amFollowing] = await Promise.all([
+    supabase.from("UserData").select().eq("id", userId).single(),
+    loggedInUserIsFollowing(session, userId),
+  ]);
+
+  if (error) {
+    console.error("Error getting user data: ", error);
+  }
+
+  return {
+    ...userData,
+    amFollowing,
+  };
+};
+
 export const usePost = (postId: string): Post | null => null;
 export const useComment = (commentId: string): Comment | null => null;
 export const useUser = (userId: string): User | null => {
@@ -128,54 +178,12 @@ export const useUser = (userId: string): User | null => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    fetchUser().catch(console.error);
-  }, []);
-
-  const fetchUser = async () => {
-    if (!userId) {
-      return;
-    }
-
-    const { data: userData, error } = await supabase
-      .from("Users")
-      .select()
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      console.error("Error getting user data: ", error);
-    }
-    if (!userData?.length) {
-      console.error("No such user!");
-      return;
-    }
-
-    setUser({
-      ...userData,
-      amFollowing: await loggedInUserIsFollowing(),
-    });
-  };
-
-  const loggedInUserIsFollowing = async () => {
-    if (!session) {
-      return false;
-    }
-
-    const { data: amFollowing, error } = await supabase
-      .from("UserFollows")
-      .select()
-      .eq("follower", session.user.id)
-      .eq("followed", userId);
-
-    if (error) {
-      console.error("Error gettig user data: ", error);
-    }
-    if (error || !amFollowing?.length) {
-      return false;
-    }
-
-    return true;
-  };
+    const fetcher = async () => {
+      const retrieved = await fetchUser(userId, session).catch(console.error);
+      retrieved && setUser(retrieved);
+    };
+    fetcher();
+  }, [userId, session]);
 
   return user;
 };
