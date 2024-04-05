@@ -1,6 +1,7 @@
 import { signIn, useAuthSession } from "@/lib/auth";
+import { useDeleteComment } from "@/lib/database";
 import { Comment } from "@/types";
-import { FaHeart, FaReply } from "react-icons/fa";
+import { FaHeart, FaReply, FaTrash } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
 import AddComment from "./add-comment";
 import Author from "./author";
@@ -18,11 +19,18 @@ export default function CommentCard({
   const session = useAuthSession();
   const liked = comment.reactedByLoggedInUser?.includes("like");
   const replying = useReplying();
+  const deleteComment = useDeleteComment();
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800">
       <Author user={comment.author}>
         <Timedelta dateTime={comment.postedAt} />
+        {comment.author.id === session?.user.id && (
+          <FaTrash
+            className="text-transparent hover:text-gray-500 hover:dark:text-gray-400"
+            onClick={() => deleteComment(postId, comment.id)}
+          />
+        )}
       </Author>
       <div className="pl-8 mt-3">{comment.content}</div>
       <div className="flex items-center mt-3 pl-8 space-x-4 font-black">

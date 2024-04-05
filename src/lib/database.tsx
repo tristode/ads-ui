@@ -342,6 +342,52 @@ export const useReplier = (): ((args: AddCommentArgs) => Promise<void>) => {
   };
 };
 
+const deleteComment = async (commentId: string): Promise<void> => {
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId);
+
+  if (error) {
+    console.error("Error deleting comment: ", error);
+  }
+};
+
+const withoutComment = (comments: Comment[], commentId: string): Comment[] =>
+  comments
+    .filter((comment) => comment.id !== commentId)
+    .map((comment) => ({
+      ...comment,
+      replies: comment.replies && withoutComment(comment.replies, commentId),
+    }));
+
+export const useDeleteComment = () => {
+  const { setPosts } = useCache();
+  const session = useAuthSession();
+
+  if (!session) {
+    return async () => signIn();
+  }
+
+  return async (postId: string, commentId: string) => {
+    await deleteComment(commentId);
+    setPosts((posts) => {
+      const post = posts[postId];
+      if (!post) {
+        return posts;
+      }
+
+      return {
+        ...posts,
+        [postId]: {
+          ...post,
+          replies: withoutComment(post.replies, commentId),
+        },
+      };
+    });
+  };
+};
+
 export const createPost = async (post: NewPostForm) => {
   const { error } = await supabase.from("posts").insert({
     title: post.title,
