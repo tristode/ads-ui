@@ -55,16 +55,20 @@ export const usePostPreview = (postId: string): Post | null => {
         `
                 *,
                 UserData!public_Post_author_fkey(*),
-                Comment(*),
+                Comment(*, UserData!public_Comment_author_fkey(*)),
                 PostLikes(*)
                 `
       )
       // .or("Users.id.eq.Comments.id")
-      // .eq("Comment.parentPost", "id")
       // .eq("PostLikes.postId", "id")
       // .eq("CommentLikes.commentId", "Comment.id")
       .eq("id", postId)
+      .eq("Comment.parentPost", postId)
       .single();
+
+    if (error) {
+      console.error("Error getting post data: ", error);
+    }
 
     let parser = z.object({
       id: z.string(),
@@ -81,16 +85,27 @@ export const usePostPreview = (postId: string): Post | null => {
         id: z.string(),
         handle: z.string(),
         name: z.string(),
-        bio: z.string(),
+        bio: z.string().nullable(),
         avatar: z.string(),
       }),
-      Comments: z
+      Comment: z
         .array(
           z.object({
             id: z.string(),
             content: z.string(),
             author: z.string(),
-            postedAt: z.date(),
+            postedAt: z.preprocess(
+              (val) => (typeof val === "string" ? new Date(val) : val),
+              z.date()
+            ),
+            parentComment: z.string().nullable(),
+            UserData: z.object({
+              id: z.string(),
+              handle: z.string(),
+              name: z.string(),
+              bio: z.string().nullable(),
+              avatar: z.string(),
+            }),
           })
         )
         .default([]),
@@ -124,10 +139,10 @@ export const usePostPreview = (postId: string): Post | null => {
       return;
     }
 
-    const getReplies = (id: string): Comment[] =>
-      parsedData.Comments.filter((comment) => comment.id == id)
+    const getReplies = (parentId: string | null): Comment[] =>
+      parsedData.Comment.filter((comment) => comment.parentComment === parentId)
         .map((comment): Comment | null => {
-          const author = null; // TODO
+          const author = comment.UserData;
           if (!author) {
             return null;
           }
@@ -135,7 +150,13 @@ export const usePostPreview = (postId: string): Post | null => {
             id: comment.id,
             content: comment.content,
             postedAt: comment.postedAt,
-            author: author,
+            author: {
+              id: author.id,
+              handle: author.handle,
+              name: author.name,
+              avatar: author.avatar,
+              bio: author.bio || undefined,
+            },
             replies: getReplies(comment.id),
             permalink: "",
           };
@@ -148,9 +169,15 @@ export const usePostPreview = (postId: string): Post | null => {
       badges: parsedData.badges ?? [],
       content: parsedData.content,
       images: parsedData.images,
-      author: author,
+      author: {
+        id: author.id,
+        handle: author.handle,
+        name: author.name,
+        avatar: author.avatar,
+        bio: author.bio || undefined,
+      },
       postedAt: parsedData.postedAt,
-      replies: getReplies(parsedData.id),
+      replies: getReplies(null),
       permalink: "",
     });
   };
