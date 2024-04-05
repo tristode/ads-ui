@@ -72,10 +72,10 @@ export default function Chats() {
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
-      <span className="text-2xl font-bold">Chats</span>
+    <div className="flex flex-col gap-4 w-full h-full p-2">
       <div className="flex flex-row gap-4 w-full h-full">
         <div className="flex flex-col gap-4">
+          <span className="text-2xl font-bold p-2">Chats</span>
           {chats
             .sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id))
             .map((chat) => (
