@@ -254,6 +254,37 @@ export const useUser = (userId: string): User | null => {
   return users[userId] ?? null;
 };
 
+export const searchUsers = async (query: string): Promise<User[]> => {
+  const { data: users, error } = await supabase
+    .from("profiles")
+    .select()
+    .textSearch("handle, name, bio", query);
+
+  if (error) {
+    console.error("Error getting user data: ", error);
+  }
+
+  if (!users) {
+    return [];
+  }
+
+  return users.map((user) => userSchema.parse(user));
+};
+
+export const useSearchUsers = (query: string): User[] => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetcher = async () => {
+      const retrieved = await searchUsers(query).catch(console.error);
+      retrieved && setUsers(retrieved);
+    };
+    fetcher();
+  }, [query]);
+
+  return users;
+};
+
 export const setLike = async (postId: string): Promise<void> => undefined;
 
 const replySchema = z.object({
