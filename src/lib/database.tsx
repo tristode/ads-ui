@@ -55,20 +55,16 @@ const useCache = () => {
 
 const fetchPost = async (postId: string): Promise<Post> => {
   let { data: postData, error } = await supabase
-    .from("Post")
+    .from("posts")
     .select(
       `
                 *,
-                UserData!public_Post_author_fkey(*),
-                Comment(*, UserData!public_Comment_author_fkey(*)),
-                PostLikes(*)
+                profiles!public_posts_author_fkey(*),
+                comments(*, profiles!public_comments_author_fkey(*))
                 `
     )
-    // .or("Users.id.eq.Comments.id")
-    // .eq("PostLikes.postId", "id")
-    // .eq("CommentLikes.commentId", "Comment.id")
     .eq("id", postId)
-    .eq("Comment.parentPost", postId)
+    .eq("comments.parent_post", postId)
     .single();
 
   if (error) {
@@ -86,14 +82,14 @@ const fetchPost = async (postId: string): Promise<Post> => {
       (val) => (typeof val === "string" ? new Date(val) : val),
       z.date()
     ),
-    UserData: z.object({
+    profiles: z.object({
       id: z.string(),
       handle: z.string(),
       name: z.string(),
       bio: z.string().nullable(),
       avatar: z.string(),
     }),
-    Comment: z
+    comments: z
       .array(
         z.object({
           id: z.string(),
@@ -103,8 +99,8 @@ const fetchPost = async (postId: string): Promise<Post> => {
             (val) => (typeof val === "string" ? new Date(val) : val),
             z.date()
           ),
-          parentComment: z.string().nullable(),
-          UserData: z.object({
+          parent_comment: z.string().nullable(),
+          profiles: z.object({
             id: z.string(),
             handle: z.string(),
             name: z.string(),
@@ -114,39 +110,22 @@ const fetchPost = async (postId: string): Promise<Post> => {
         })
       )
       .default([]),
-    PostLikes: z
-      .array(
-        z.object({
-          postId: z.string(),
-          userId: z.string(),
-        })
-      )
-      .nullable()
-      .default(null),
-    CommentLikes: z
-      .array(
-        z.object({
-          commentId: z.string(),
-          userId: z.string(),
-        })
-      )
-      .nullable()
-      .default(null),
   });
   let parsedData = parser.parse(postData);
 
   if (error) {
     console.error(error);
   }
-  const author = parsedData.UserData;
+  const author = parsedData.profiles;
   if (!postData || !author) {
     throw new Error("Post not found");
   }
 
   const getReplies = (parentId: string | null): Comment[] =>
-    parsedData.Comment.filter((comment) => comment.parentComment === parentId)
+    parsedData.comments
+      .filter((comment) => comment.parent_comment === parentId)
       .map((comment): Comment | null => {
-        const author = comment.UserData;
+        const author = comment.profiles;
         return {
           id: comment.id,
           content: comment.content,
@@ -192,7 +171,6 @@ export const usePostPreview = (postId: string): Post | null => {
     }
     const fetcher = async () => {
       const post = await fetchPost(postId);
-      console.log("Post: ", post);
       setPosts((posts) => ({ ...posts, [postId]: post }));
     };
     fetcher();
@@ -210,7 +188,7 @@ const loggedInUserIsFollowing = async (
   }
 
   const { data: amFollowing, error } = await supabase
-    .from("UserFollows")
+    .from("follows")
     .select()
     .eq("follower", session.user.id)
     .eq("followed", userId);
@@ -225,6 +203,14 @@ const loggedInUserIsFollowing = async (
   return true;
 };
 
+const userSchema = z.object({
+  id: z.string(),
+  handle: z.string(),
+  name: z.string(),
+  bio: z.string().optional(),
+  avatar: z.string(),
+});
+
 const fetchUser = async (
   userId: string,
   session: Session | null
@@ -234,7 +220,7 @@ const fetchUser = async (
   }
 
   const [{ data: userData, error }, amFollowing] = await Promise.all([
-    supabase.from("UserData").select().eq("id", userId).single(),
+    supabase.from("profiles").select().eq("id", userId).single(),
     loggedInUserIsFollowing(session, userId),
   ]);
 
@@ -243,7 +229,7 @@ const fetchUser = async (
   }
 
   return {
-    ...userData,
+    ...userSchema.parse(userData),
     amFollowing,
   };
 };
@@ -284,12 +270,12 @@ const reply = async (
   args: AddCommentArgs
 ): Promise<z.infer<typeof replySchema>> => {
   const { data: comment, error } = await supabase
-    .from("Comment")
+    .from("comments")
     .insert({
       author: session.user.id,
       content: args.content,
-      parentPost: args.postId,
-      parentComment: args.parentId,
+      parent_post: args.postId,
+      parent_comment: args.parentId,
     })
     .select();
 
@@ -357,7 +343,7 @@ export const useReplier = (): ((args: AddCommentArgs) => Promise<void>) => {
 };
 
 export const createPost = async (post: NewPostForm) => {
-  const { error } = await supabase.from("Posts").insert({
+  const { error } = await supabase.from("posts").insert({
     title: post.title,
     badges: post.badges ?? [],
     content: post.content,
