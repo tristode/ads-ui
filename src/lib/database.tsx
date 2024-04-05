@@ -207,7 +207,7 @@ const userSchema = z.object({
   id: z.string(),
   handle: z.string(),
   name: z.string(),
-  bio: z.string().optional(),
+  bio: z.preprocess((val) => val || undefined, z.string().optional()),
   avatar: z.string(),
 });
 
