@@ -165,6 +165,7 @@ const fetchChatMessages = async (
   let { data: messages, error } = await supabase
     .from("chat_messages")
     .select("*")
+    .order("created_at", { ascending: true })
     .eq("chat", chatId);
 
   if (error) {
@@ -208,6 +209,7 @@ const subscribeToChatMessages = (
       { event: "INSERT", schema: "public" },
       (payload) => {
         const message = messageSchema.parse(payload.new);
+        if (message.chat !== chatId) return;
         onMessage(message);
       }
     )
