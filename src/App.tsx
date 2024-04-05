@@ -8,13 +8,17 @@ import { ReplyingProvider } from "./components/single-reply-box-provider";
 import { ChatsProvider } from "./lib/chat";
 import { DataProvider, usePostPreview } from "./lib/database";
 
-function App() {
+function PostPreview() {
   const post = usePostPreview("0dbcdd10-b4f6-4223-9386-2992103da603");
 
+  return post && <Post post={post} />;
+}
+
+function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <ReplyingProvider>
-        <DataProvider>
+      <DataProvider>
+        <ReplyingProvider>
           <ChatsProvider>
             <Auth />
             <Invite
@@ -27,14 +31,14 @@ function App() {
                 ФПН має діскорд-сервер :3
               </p>
             </Invite>
-            {post && <Post post={post} />}
+            <PostPreview />
             <ModeToggle />
             <div className="h-screen">
               <Chats />
             </div>
           </ChatsProvider>
-        </DataProvider>
-      </ReplyingProvider>
+        </ReplyingProvider>
+      </DataProvider>
     </ThemeProvider>
   );
 }

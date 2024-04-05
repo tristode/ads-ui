@@ -81,7 +81,8 @@ export default function PostCard({
         </ShareButton>
       </div>
       <AddComment
-        parentId={post.id}
+        postId={post.id}
+        parentId={null}
         className={
           post.id === replying.parentId || (exclusive && !replying.parentId)
             ? ""
@@ -91,7 +92,7 @@ export default function PostCard({
         onCancel={() => replying.setParentId(undefined)}
       />
       {post.replies?.map((reply) => (
-        <Comment key={reply.id} comment={reply} />
+        <Comment key={reply.id} comment={reply} postId={post.id} />
       ))}
     </article>
   );

@@ -8,7 +8,13 @@ import { useReplying } from "./single-reply-box-provider";
 import { ShareButton } from "./ui/share-button";
 import Timedelta from "./ui/timedelta";
 
-export default function CommentCard({ comment }: { comment: Comment }) {
+export default function CommentCard({
+  comment,
+  postId,
+}: {
+  comment: Comment;
+  postId: string;
+}) {
   const session = useAuthSession();
   const liked = comment.reactedByLoggedInUser?.includes("like");
   const replying = useReplying();
@@ -55,6 +61,7 @@ export default function CommentCard({ comment }: { comment: Comment }) {
       </div>
       {replying.parentId === comment.id && (
         <AddComment
+          postId={postId}
           parentId={comment.id}
           parentAuthorHandle={comment.author.handle}
           onCancel={() => replying.setParentId(undefined)}
@@ -64,7 +71,7 @@ export default function CommentCard({ comment }: { comment: Comment }) {
       {comment.replies && (
         <div className="pl-2 mt-3 border-l-2 border-gray-200 dark:border-gray-700">
           {comment.replies.map((reply) => (
-            <CommentCard key={reply.id} comment={reply} />
+            <CommentCard key={reply.id} comment={reply} postId={postId} />
           ))}
         </div>
       )}

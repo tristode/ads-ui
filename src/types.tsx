@@ -2,59 +2,60 @@ export type CheckmarkType = "twitter" | "discord" | "moderator";
 export type ReactionType = "like";
 
 export interface AddCommentArgs {
-    parentId: string;
-    content: string;
+  postId: string;
+  parentId: string | null;
+  content: string;
 }
 
 export type User = {
-    id: string;
-    handle: string;
-    name: string;
-    avatar: string;
-    bio?: string;
-    checkmarks?: CheckmarkType[];
+  id: string;
+  handle: string;
+  name: string;
+  avatar: string;
+  bio?: string;
+  checkmarks?: CheckmarkType[];
 
-    amFollowing?: boolean;
+  amFollowing?: boolean;
 };
 
 export type Comment = {
-    id: string;
-    permalink: string;
+  id: string;
+  permalink: string;
 
-    content: string;
+  content: string;
 
-    author: User;
-    postedAt: Date;
+  author: User;
+  postedAt: Date;
 
-    replies?: Comment[];
-    reactions?: { [key in ReactionType]: number };
-    reactedByLoggedInUser?: ReactionType[];
+  replies?: Comment[];
+  reactions?: { [key in ReactionType]: number };
+  reactedByLoggedInUser?: ReactionType[];
 };
 
 export type Post = {
-    id: string;
-    permalink: string;
+  id: string;
+  permalink: string;
 
-    title: string;
-    badges?: string[];
-    content: string;
-    images?: string[];
+  title: string;
+  badges?: string[];
+  content: string;
+  images?: string[];
 
-    author: User;
-    postedAt: Date;
+  author: User;
+  postedAt: Date;
 
-    replies: Comment[];
-    replyCount?: number;
-    reactions?: { [key in ReactionType]: number };
-    reactedByLoggedInUser?: ReactionType[];
+  replies: Comment[];
+  replyCount?: number;
+  reactions?: { [key in ReactionType]: number };
+  reactedByLoggedInUser?: ReactionType[];
 };
 
 export type NewPostForm = {
-    title: string;
-    badges?: string[];
-    content: string;
-    images?: string[];
+  title: string;
+  badges?: string[];
+  content: string;
+  images?: string[];
 
-    author: User;
-    postedAt: Date;
+  author: User;
+  postedAt: Date;
 };

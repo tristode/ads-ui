@@ -1,32 +1,31 @@
 import { useAuthSession } from "@/lib/auth";
+import { useReplier } from "@/lib/database";
 import { cn } from "@/lib/utils";
-import { AddCommentArgs } from "@/types";
 import { useState } from "react";
 import { MdClose, MdSend } from "react-icons/md";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
 
 export default function AddComment({
+  postId,
   parentId,
   parentAuthorHandle,
   onCancel,
   className,
 }: {
-  parentId: string;
+  postId: string;
+  parentId: string | null;
   parentAuthorHandle?: string;
   onCancel?: () => void;
   className?: string;
 }) {
   const [content, setContent] = useState("");
   const session = useAuthSession();
-
-  const addComment = async ({ parentId, content }: AddCommentArgs) => {
-    console.log(`Adding comment to post ${parentId}: ${content}`);
-  };
+  const reply = useReplier();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addComment({ parentId, content });
+    reply({ postId, parentId, content });
     setContent("");
   };
 
