@@ -19,7 +19,7 @@ export default function Auth() {
   }
 
   return (
-    <>
+    <div className="flex items-center gap-2">
       <Avatar className="w-6 h-6">
         <AvatarImage
           alt={session.user.user_metadata.name}
@@ -28,6 +28,6 @@ export default function Auth() {
         <AvatarFallback>{session.user.user_metadata.name[0]}</AvatarFallback>
       </Avatar>
       <FaCog className="w-6 h-6" />
-    </>
+    </div>
   );
 }

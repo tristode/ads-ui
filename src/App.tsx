@@ -1,20 +1,21 @@
 import Post from "@/components/post";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useState } from "react";
+import {
+  createBrowserRouter,
+  Link,
+  RouterProvider,
+  useParams,
+} from "react-router-dom";
 import Auth from "./components/auth";
 import Author from "./components/author";
 import Chats from "./components/chats";
 import Invite from "./components/invite";
 import { ModeToggle } from "./components/mode-toggle";
 import { ReplyingProvider } from "./components/single-reply-box-provider";
+import { Button } from "./components/ui/button";
 import { ChatsProvider } from "./lib/chat";
 import { DataProvider, usePostPreview, useSearchUsers } from "./lib/database";
-
-function PostPreview() {
-  const post = usePostPreview("0dbcdd10-b4f6-4223-9386-2992103da603");
-
-  return post && <Post post={post} />;
-}
 
 function UserSearch() {
   const [query, setQuery] = useState("");
@@ -35,29 +36,69 @@ function UserSearch() {
   );
 }
 
+function Homepage() {
+  return (
+    <>
+      <div className="flex flexitem-center p-4 gap-2">
+        <Auth />
+        <ModeToggle />
+      </div>
+      <UserSearch />
+      <Invite
+        link="https://discord.gg/mnwByZAS"
+        title="УКУ: Прикладні науки"
+        icon="/logo.png"
+        notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
+      >
+        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
+          ФПН має діскорд-сервер :3
+        </p>
+      </Invite>
+      <div className="flex gap-4 p-4 w-full justify-center">
+        <Link to="/chats">
+          <Button>Chats</Button>
+        </Link>
+        <Link to="/post/0dbcdd10-b4f6-4223-9386-2992103da603">
+          <Button>Post</Button>
+        </Link>
+      </div>
+    </>
+  );
+}
+
+function PostPage() {
+  const { id } = useParams();
+  const post = usePostPreview(id || "");
+
+  return post && <Post post={post} />;
+}
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Homepage />,
+  },
+  {
+    path: "/post/:id",
+    element: <PostPage />,
+  },
+  {
+    path: "/chats",
+    element: (
+      <div className="h-screen">
+        <Chats />
+      </div>
+    ),
+  },
+]);
+
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <DataProvider>
         <ReplyingProvider>
           <ChatsProvider>
-            <Auth />
-            <Invite
-              link="https://discord.gg/mnwByZAS"
-              title="УКУ: Прикладні науки"
-              icon="/logo.png"
-              notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
-            >
-              <p className="text-sm text-gray-600 dark:text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
-                ФПН має діскорд-сервер :3
-              </p>
-            </Invite>
-            <UserSearch />
-            <PostPreview />
-            <ModeToggle />
-            <div className="h-screen">
-              <Chats />
-            </div>
+            <RouterProvider router={router} />
           </ChatsProvider>
         </ReplyingProvider>
       </DataProvider>
