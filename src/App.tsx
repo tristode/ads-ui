@@ -2,10 +2,10 @@ import Post from "@/components/post";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useState } from "react";
 import {
-  createBrowserRouter,
-  Link,
-  RouterProvider,
-  useParams,
+    createBrowserRouter,
+    Link,
+    RouterProvider,
+    useParams,
 } from "react-router-dom";
 import Auth from "./components/auth";
 import Author from "./components/author";
@@ -18,92 +18,92 @@ import { ChatsProvider } from "./lib/chat";
 import { DataProvider, usePostPreview, useSearchUsers } from "./lib/database";
 
 function UserSearch() {
-  const [query, setQuery] = useState("");
-  const users = useSearchUsers(query);
+    const [query, setQuery] = useState("");
+    const users = useSearchUsers(query);
 
-  return (
-    <div className="p-4 flex flex-col gap-4">
-      <input
-        className="bg-gray-100 dark:bg-gray-800"
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      {users.map((user) => (
-        <Author key={user.id} user={user} />
-      ))}
-    </div>
-  );
+    return (
+        <div className="flex flex-col gap-4 p-4">
+            <input
+                className="bg-gray-100 dark:bg-gray-800"
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+            />
+            {users.map((user) => (
+                <Author key={user.id} user={user} />
+            ))}
+        </div>
+    );
 }
 
 function Homepage() {
-  return (
-    <>
-      <div className="flex flexitem-center p-4 gap-2">
-        <Auth />
-        <ModeToggle />
-      </div>
-      <UserSearch />
-      <Invite
-        link="https://discord.gg/mnwByZAS"
-        title="УКУ: Прикладні науки"
-        icon="/logo.png"
-        notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
-      >
-        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
-          ФПН має діскорд-сервер :3
-        </p>
-      </Invite>
-      <div className="flex gap-4 p-4 w-full justify-center">
-        <Link to="/chats">
-          <Button>Chats</Button>
-        </Link>
-        <Link to="/post/0dbcdd10-b4f6-4223-9386-2992103da603">
-          <Button>Post</Button>
-        </Link>
-      </div>
-    </>
-  );
+    return (
+        <>
+            <div className="flexitem-center flex gap-2 p-4">
+                <Auth />
+                <ModeToggle />
+            </div>
+            <UserSearch />
+            <Invite
+                link="https://discord.gg/mnwByZAS"
+                title="УКУ: Прикладні науки"
+                icon="/logo.png"
+                notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
+            >
+                <p className="max-w-full overflow-hidden text-ellipsis text-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    ФПН має діскорд-сервер :3
+                </p>
+            </Invite>
+            <div className="flex w-full justify-center gap-4 p-4">
+                <Link to="/chats">
+                    <Button>Chats</Button>
+                </Link>
+                <Link to="/post/0dbcdd10-b4f6-4223-9386-2992103da603">
+                    <Button>Post</Button>
+                </Link>
+            </div>
+        </>
+    );
 }
 
 function PostPage() {
-  const { id } = useParams();
-  const post = usePostPreview(id || "");
+    const { id } = useParams();
+    const post = usePostPreview(id || "");
 
-  return post && <Post post={post} />;
+    return post && <Post post={post} />;
 }
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Homepage />,
-  },
-  {
-    path: "/post/:id",
-    element: <PostPage />,
-  },
-  {
-    path: "/chats",
-    element: (
-      <div className="h-screen">
-        <Chats />
-      </div>
-    ),
-  },
+    {
+        path: "/",
+        element: <Homepage />,
+    },
+    {
+        path: "/post/:id",
+        element: <PostPage />,
+    },
+    {
+        path: "/chats",
+        element: (
+            <div className="h-screen">
+                <Chats />
+            </div>
+        ),
+    },
 ]);
 
 function App() {
-  return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <DataProvider>
-        <ReplyingProvider>
-          <ChatsProvider>
-            <RouterProvider router={router} />
-          </ChatsProvider>
-        </ReplyingProvider>
-      </DataProvider>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <DataProvider>
+                <ReplyingProvider>
+                    <ChatsProvider>
+                        <RouterProvider router={router} />
+                    </ChatsProvider>
+                </ReplyingProvider>
+            </DataProvider>
+        </ThemeProvider>
+    );
 }
 
 export default App;
