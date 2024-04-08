@@ -1,15 +1,26 @@
 import { SimpleMdeReact } from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { useCallback, useMemo, useState } from "react";
+import "./editor-style.css";
+import { useMemo } from "react";
 
-export default function Editor() {
-    const [value, setValue] = useState("");
-    const onChange = useCallback((val: string) => {
-        console.log(val);
-        setValue(val);
-    }, []);
-    const options = useMemo(() => ({ toolbar: false, status: false }), []);
+export default function Editor({
+    value,
+    onChange,
+}: {
+    value: string;
+    onChange: (_: string) => void;
+}) {
+    const options = useMemo(
+        () => ({ toolbar: false, status: false, spellChecker: false }),
+        [],
+    );
     return (
-        <SimpleMdeReact value={value} onChange={onChange} options={options} />
+        <div className="w-full">
+            <SimpleMdeReact
+                value={value}
+                onChange={onChange}
+                options={options}
+            />
+        </div>
     );
 }
