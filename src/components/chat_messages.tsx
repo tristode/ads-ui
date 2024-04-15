@@ -45,7 +45,7 @@ export default function ChatMessages({
   const messages = useChatMessages(chatId);
 
   return (
-    <div className="flex flex-col justify-end gap-0 w-full h-full p-4 overflow-y-auto">
+    <div className="flex flex-col justify-end gap-0 w-full p-4 overflow-y-auto">
       {owner && (
         <span className="text-xs self-center p-2 text-gray-500 dark:text-gray-400">
           This chat is owned by @{owner.handle}

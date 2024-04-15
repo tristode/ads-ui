@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
     createBrowserRouter,
     Link,
+    Outlet,
     RouterProvider,
     useParams,
 } from "react-router-dom";
@@ -16,6 +17,7 @@ import { ReplyingProvider } from "./components/single-reply-box-provider";
 import { Button } from "./components/ui/button";
 import { ChatsProvider } from "./lib/chat";
 import { DataProvider, usePostPreview, useSearchUsers } from "./lib/database";
+import Navigation from "./components/navigation";
 
 function UserSearch() {
     const [query, setQuery] = useState("");
@@ -39,10 +41,7 @@ function UserSearch() {
 function Homepage() {
     return (
         <>
-            <div className="flexitem-center flex gap-2 p-4">
-                <Auth />
-                <ModeToggle />
-            </div>
+            <Navigation />
             <UserSearch />
             <Invite
                 link="https://discord.gg/mnwByZAS"
@@ -54,14 +53,6 @@ function Homepage() {
                     ФПН має діскорд-сервер :3
                 </p>
             </Invite>
-            <div className="flex w-full justify-center gap-4 p-4">
-                <Link to="/chats">
-                    <Button>Chats</Button>
-                </Link>
-                <Link to="/post/0dbcdd10-b4f6-4223-9386-2992103da603">
-                    <Button>Post</Button>
-                </Link>
-            </div>
         </>
     );
 }
@@ -76,19 +67,32 @@ function PostPage() {
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Homepage />,
-    },
-    {
-        path: "/post/:id",
-        element: <PostPage />,
-    },
-    {
-        path: "/chats",
         element: (
-            <div className="h-screen">
-                <Chats />
-            </div>
+            <>
+                <div className="h-screen overflow-y-auto pb-16 md:pb-0 md:pt-16">
+                    <Outlet />
+                </div>
+                <Navigation />
+            </>
         ),
+        children: [
+            {
+                index: true,
+                element: <Homepage />,
+            },
+            {
+                path: "post/:id",
+                element: <PostPage />,
+            },
+            {
+                path: "chats",
+                element: (
+                    <div className="h-screen">
+                        <Chats />
+                    </div>
+                ),
+            },
+        ],
     },
 ]);
 
