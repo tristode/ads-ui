@@ -25,7 +25,7 @@ export default function ChatInput({ chatId }: { chatId: string }) {
             }}
             className="flex w-full items-center gap-2 p-4"
         >
-            <Editor value={message} onChange={onChange} />
+            <Editor value={message} onChange={onChange} className="w-full bg-input rounded-md" />
             <Button type="submit">Send</Button>
         </form>
     );

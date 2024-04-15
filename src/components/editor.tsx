@@ -6,16 +6,18 @@ import { useMemo } from "react";
 export default function Editor({
     value,
     onChange,
+    className,
 }: {
     value: string;
     onChange: (_: string) => void;
+    className?: string;
 }) {
     const options = useMemo(
         () => ({ toolbar: false, status: false, spellChecker: false }),
         [],
     );
     return (
-        <div className="w-full">
+        <div className={className}>
             <SimpleMdeReact
                 value={value}
                 onChange={onChange}

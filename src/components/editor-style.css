@@ -6,7 +6,7 @@
 .CodeMirror, .editor-preview {
     color: theme("colors.foreground") !important;
     border-color: unset !important;
-    background-color: theme("colors.input") !important;
+    background-color: transparent !important;
 }
 
 .cm-s-easymde .CodeMirror-cursor {
@@ -18,7 +18,7 @@
 }
 
 .editor-toolbar button.active, .editor-toolbar button:hover {
-    background-color: theme("colors.secondary.DEFAULT") !important; /* Fixes toolbar buttons from appearing as white when hovered or selected*/
+    background-color: transparent !important; /* Fixes toolbar buttons from appearing as white when hovered or selected*/
 }
 
 .editor-preview pre {
