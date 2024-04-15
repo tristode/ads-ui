@@ -186,7 +186,13 @@ export const useLatestPosts = async (nPosts: number): Promise<Post[] | null> => 
     const fetchPosts = async () => {
         const { data, error } = await supabase
             .from("posts")
-            .select()
+            .select(
+                `
+                *,
+                profiles!public_posts_author_fkey(*),
+                comments(*, profiles!public_comments_author_fkey(*))
+            `
+            )
             .order("posted_at", { ascending: false })
             .limit(nPosts);
 
