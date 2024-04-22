@@ -3,21 +3,18 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { useState } from "react";
 import {
     createBrowserRouter,
-    Link,
     Outlet,
     RouterProvider,
     useParams,
 } from "react-router-dom";
-import Auth from "./components/auth";
 import Author from "./components/author";
 import Chats from "./components/chats";
 import Invite from "./components/invite";
-import { ModeToggle } from "./components/mode-toggle";
 import { ReplyingProvider } from "./components/single-reply-box-provider";
-import { Button } from "./components/ui/button";
 import { ChatsProvider } from "./lib/chat";
 import { DataProvider, usePostPreview, useSearchUsers } from "./lib/database";
 import Navigation from "./components/navigation";
+import Homepage from "./homepage";
 
 function UserSearch() {
     const [query, setQuery] = useState("");
@@ -38,25 +35,6 @@ function UserSearch() {
     );
 }
 
-function Homepage() {
-    return (
-        <>
-            <Navigation />
-            <UserSearch />
-            <Invite
-                link="https://discord.gg/mnwByZAS"
-                title="УКУ: Прикладні науки"
-                icon="/logo.png"
-                notice="Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!"
-            >
-                <p className="max-w-full overflow-hidden text-ellipsis text-nowrap text-sm text-gray-600 dark:text-gray-400">
-                    ФПН має діскорд-сервер :3
-                </p>
-            </Invite>
-        </>
-    );
-}
-
 function PostPage() {
     const { id } = useParams();
     const post = usePostPreview(id || "");
@@ -69,7 +47,7 @@ const router = createBrowserRouter([
         path: "/",
         element: (
             <>
-                <div className="h-screen overflow-y-auto pb-16 md:pb-0 md:pt-16">
+                <div className="pb-16 md:pb-0 md:pt-16">
                     <Outlet />
                 </div>
                 <Navigation />

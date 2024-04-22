@@ -10,7 +10,6 @@ import { FaHeart } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
 import { useReplying } from "./single-reply-box-provider";
 import { ShareButton } from "./ui/share-button";
-import Navigation from "./navigation";
 
 export default function PostCard({
     post,
@@ -24,7 +23,6 @@ export default function PostCard({
 
     return (
         <>
-            <Navigation />
             <article className="mx-auto max-w-2xl overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
                 <div className="flex flex-col p-4">
                     <div className="space-around flex flex-wrap items-center">

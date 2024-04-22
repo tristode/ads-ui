@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { User } from "../types";
 import { NewPostForm } from "@/types";
-import { z } from "zod";
+import { boolean, z } from "zod";
 import { Session } from "@supabase/supabase-js";
 
 type Cache = {
@@ -178,9 +178,12 @@ export const usePostPreview = (postId: string): Post | null => {
   return posts[postId] ?? null;
 };
 
-export const useLatestPosts = (nPosts: number): Post[] | null => {
+export const useLatestPosts = (
+  nPosts: number
+): { posts: Post[] | null; hasMore: boolean } => {
   const { setPosts } = useCache();
   const [latestPosts, setLatestPosts] = useState<Post[] | null>(null);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -200,6 +203,7 @@ export const useLatestPosts = (nPosts: number): Post[] | null => {
     }
     const postsList = (data ?? []).map(parsePost);
     setLatestPosts(postsList);
+    setHasMore(postsList.length >= nPosts); // TODO: properly handle this
     const postsDict = postsList.reduce((acc, post: Post) => {
       acc = { ...acc, [post.id]: post };
       return acc;
@@ -211,7 +215,7 @@ export const useLatestPosts = (nPosts: number): Post[] | null => {
     fetchPosts();
   }, [nPosts]);
 
-  return latestPosts;
+  return { posts: latestPosts, hasMore };
 };
 
 const loggedInUserIsFollowing = async (
