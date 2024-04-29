@@ -8,10 +8,6 @@ export default function ChatInput({ chatId }: { chatId: string }) {
     const session = useAuthSession();
     const [message, setMessage] = useState("");
 
-    const onChange = useCallback((val: string) => {
-        setMessage(val);
-    }, []);
-
     if (!session) {
         return <div>Log in to send messages</div>;
     }
@@ -25,7 +21,7 @@ export default function ChatInput({ chatId }: { chatId: string }) {
             }}
             className="flex w-full items-center gap-2 p-4"
         >
-            <Editor value={message} onChange={onChange} className="w-full bg-input rounded-md" />
+            <Editor value={message} onChange={setMessage} className="w-full bg-input rounded-md" />
             <Button type="submit">Send</Button>
         </form>
     );

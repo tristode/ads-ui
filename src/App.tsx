@@ -15,25 +15,7 @@ import { ChatsProvider } from "./lib/chat";
 import { DataProvider, usePostPreview, useSearchUsers } from "./lib/database";
 import Navigation from "./components/navigation";
 import Homepage from "./homepage";
-
-function UserSearch() {
-    const [query, setQuery] = useState("");
-    const users = useSearchUsers(query);
-
-    return (
-        <div className="flex flex-col gap-4 p-4">
-            <input
-                className="bg-gray-100 dark:bg-gray-800"
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-            />
-            {users.map((user) => (
-                <Author key={user.id} user={user} />
-            ))}
-        </div>
-    );
-}
+import NewPost from "./components/new_post";
 
 function PostPage() {
     const { id } = useParams();
@@ -70,6 +52,10 @@ const router = createBrowserRouter([
                     </div>
                 ),
             },
+            {
+                path: "new-post",
+                element: <NewPost />,
+            }
         ],
     },
 ]);
