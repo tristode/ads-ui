@@ -52,10 +52,9 @@ export type Post = {
 
 export type NewPostForm = {
   title: string;
-  badges?: string[];
   content: string;
+  badges?: string[];
   images?: string[];
 
-  author: User;
-  postedAt: Date;
+  author: string;
 };

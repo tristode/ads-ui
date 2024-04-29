@@ -8,7 +8,7 @@ import { Button } from "./components/ui/button";
 import { Link } from "react-router-dom";
 
 export default function Homepage() {
-    const [postCount, setCount] = useState(1);
+    const [postCount, setCount] = useState(5);
     const { posts, hasMore } = useLatestPosts(postCount);
     const session = useAuthSession();
 
@@ -16,7 +16,7 @@ export default function Homepage() {
         <>
             <InfiniteScroll
                 dataLength={posts?.length || 0}
-                next={() => setCount(postCount + 1)}
+                next={() => setCount(postCount + 5)}
                 hasMore={hasMore}
                 loader={<h3>Loading...</h3>}
                 className="flex flex-col items-center gap-4"

@@ -464,8 +464,7 @@ export const createPost = async (post: NewPostForm) => {
     badges: post.badges ?? [],
     content: post.content,
     images: post.images ?? [],
-    author: post.author.id,
-    posted_at: post.postedAt,
+    author: post.author,
   });
 
   if (error) {

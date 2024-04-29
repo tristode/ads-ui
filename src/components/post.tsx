@@ -23,7 +23,7 @@ export default function PostCard({
 
     return (
         <>
-            <article className="mx-auto max-w-2xl overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+            <article className="mx-auto max-w-2xl w-full overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
                 <div className="flex flex-col p-4">
                     <div className="space-around flex flex-wrap items-center">
                         <Author user={post.author}>
