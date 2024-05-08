@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { User } from "../types";
 import { NewPostForm } from "@/types";
-import { boolean, z } from "zod";
+import { z } from "zod";
 import { Session } from "@supabase/supabase-js";
 
 type Cache = {
@@ -272,6 +272,36 @@ const fetchUser = async (
     amFollowing,
   };
 };
+
+const getPostsFromFollows = async (
+    session: Session | null
+): Promise<Post[] | null> => {
+  if (!session) {
+    return null;
+  }
+
+  const {data: followedUserIds, error} = await supabase
+    .from("follows")
+    .select()
+    .eq("follower", session.user.id);
+
+  if (error) {
+    console.error("Error getting user data: ", error);
+  }
+
+  const posts = await Promise.all(
+      (followedUserIds || []).map(
+      async (followPair: {followed: string, follower: string}) => {
+          const {data, error} = await supabase.from("posts").select().eq("author", followPair.followed);
+          if (error) {
+            console.error("Error getting user data: ", error);
+          }
+          return (data || []).map(parsePost);
+      }
+      ));
+
+  return posts.flat();
+}
 
 export const usePost = (postId: string): Post | null => null;
 export const useComment = (commentId: string): Comment | null => null;
