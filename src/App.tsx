@@ -14,6 +14,7 @@ import Navigation from "./components/navigation";
 import Homepage from "./homepage";
 import NewPost from "./components/new_post";
 import Feed from "./feed";
+import CreateProfile from "./create-profile";
 
 function PostPage() {
   const { id } = useParams();
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "new-post",
         element: <NewPost />,
+      },
+      {
+        path: "/create-profile",
+        element: <CreateProfile/>,
       },
     ],
   },
