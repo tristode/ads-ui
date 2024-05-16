@@ -39,7 +39,11 @@ export default function CommentCard({
       <div className="flex items-center mt-3 pl-8 space-x-4 font-black">
         <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
           <FaHeart className={liked ? "text-red-500" : "text-gray-500"} />
-          Like
+          {comment.reactions?.like
+            ? comment.reactions.like === 1
+              ? "1 like"
+              : `${comment.reactions.like} likes`
+            : "Like"}
         </button>
         <button
           className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1"
