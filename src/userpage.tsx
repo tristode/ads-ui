@@ -1,4 +1,4 @@
-import { useLatestPosts, useUser } from "./lib/database";
+import { useLatestUserPosts, useUser } from "./lib/database";
 import {useParams} from "react-router-dom";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Checkmark from "./components/ui/checkmark";
@@ -11,7 +11,7 @@ export default function ProfilePage(){
     const { userId } = useParams();
     const user = useUser(userId ?? "");
     const [postCount,setCount] = useState(5);
-    const {posts, hasMore} = useLatestPosts(postCount);
+    const {posts, hasMore} = useLatestUserPosts(postCount, userId ?? "");
     return(
       <article className="mx-auto w-full max-w-2xl overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
         <div className="flex flex-col items-center justify-center pt-16">

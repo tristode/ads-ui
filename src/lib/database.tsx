@@ -267,6 +267,50 @@ export const useLatestPosts = (
   return { posts: latestPosts, hasMore };
 };
 
+export const useLatestUserPosts = (
+  nPosts: number,userId:string
+): { posts: Post[] | null; hasMore: boolean } => {
+  const { setPosts, users, setUsers } = useCache();
+  const [latestPosts, setLatestPosts] = useState<Post[] | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const session = useAuthSession();
+
+  const fetchPosts = async () => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select(
+        `
+                *,
+                profiles!public_posts_author_fkey(*),
+                comments(*, profiles!public_comments_author_fkey(*), comment_likes(*)),
+                post_likes(*)
+            `
+      ).eq('author', userId)
+      .order("posted_at", { ascending: false })
+      .limit(nPosts);
+
+    if (error) {
+      console.error("Error gettig posts: ", error);
+    }
+    const postsList = (data ?? []).map((post) =>
+      parsePost(post, users, setUsers, session?.user.id)
+    );
+    setLatestPosts(postsList);
+    setHasMore(postsList.length >= nPosts); // TODO: properly handle this
+    const postsDict = postsList.reduce((acc, post: Post) => {
+      acc = { ...acc, [post.id]: post };
+      return acc;
+    }, {});
+    setPosts((posts) => ({ ...posts, ...postsDict }));
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [nPosts, session]);
+
+  return { posts: latestPosts, hasMore };
+};
+
 const loggedInUserIsFollowing = async (
   session: Session | null,
   userId: string
