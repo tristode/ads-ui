@@ -940,13 +940,14 @@ export async function userExists(userId: string) {
   const { data, error } = await supabase
     .from("profiles")
     .select()
-    .eq("id", userId);
+    .eq("id", userId)
+    .single();
 
   if (error) {
-    console.error("Error getting user data: ", error);
+    return false;
   }
 
-  return !!data;
+  return true;
 }
 
 //
