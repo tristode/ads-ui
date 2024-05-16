@@ -54,6 +54,16 @@ const router = createBrowserRouter([
             <Chats />
           </div>
         ),
+        children: [
+          {
+            path: ":chatId",
+            element: (
+              <div className="h-screen">
+                <Chats />
+              </div>
+            ),
+          },
+        ],
       },
       {
         path: "new-post",
@@ -61,7 +71,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/create-profile",
-        element: <CreateProfile/>,
+        element: <CreateProfile />,
       },
     ],
   },

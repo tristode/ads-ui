@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import Checkmark from "./ui/checkmark";
 import { useChatCreatorWithUser } from "@/lib/chat";
 import { useFollowActions } from "@/lib/database";
+import { useNavigate } from "react-router-dom";
 
 export default function Author({
   user,
@@ -20,6 +21,7 @@ export default function Author({
 }) {
   const createChat = useChatCreatorWithUser();
   const { follow, unfollow } = useFollowActions();
+  const navigate = useNavigate();
 
   return (
     <HoverCard>
@@ -77,9 +79,12 @@ export default function Author({
               variant="accent"
               size="sm"
               className="font-bold"
-              onClick={
-                () => createChat(null, user.id) // TODO: redirect to the chat
-              }
+              onClick={async () => {
+                const chat = await createChat(null, user.id);
+                if (chat) {
+                  navigate(`/chats/${chat}`);
+                }
+              }}
             >
               <FaMessage />
             </Button>
