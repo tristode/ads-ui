@@ -1,5 +1,5 @@
 import { signIn, useAuthSession } from "@/lib/auth";
-import { useDeleteComment } from "@/lib/database";
+import { useDeleteComment, useUser } from "@/lib/database";
 import { Comment } from "@/types";
 import { FaHeart, FaReply, FaTrash } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
@@ -20,18 +20,21 @@ export default function CommentCard({
   const liked = comment.reactedByLoggedInUser?.includes("like");
   const replying = useReplying();
   const deleteComment = useDeleteComment();
+  const author = useUser(comment.authorId);
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800">
-      <Author user={comment.author}>
-        <Timedelta dateTime={comment.postedAt} />
-        {comment.author.id === session?.user.id && (
-          <FaTrash
-            className="text-transparent hover:text-gray-500 hover:dark:text-gray-400"
-            onClick={() => deleteComment(postId, comment.id)}
-          />
-        )}
-      </Author>
+      {author && (
+        <Author user={author}>
+          <Timedelta dateTime={comment.postedAt} />
+          {author.id === session?.user.id && (
+            <FaTrash
+              className="text-transparent hover:text-gray-500 hover:dark:text-gray-400"
+              onClick={() => deleteComment(postId, comment.id)}
+            />
+          )}
+        </Author>
+      )}
       <div className="pl-8 mt-3">{comment.content}</div>
       <div className="flex items-center mt-3 pl-8 space-x-4 font-black">
         <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
@@ -67,11 +70,11 @@ export default function CommentCard({
           </button>
         </ShareButton>
       </div>
-      {replying.parentId === comment.id && (
+      {replying.parentId === comment.id && author && (
         <AddComment
           postId={postId}
           parentId={comment.id}
-          parentAuthorHandle={comment.author.handle}
+          parentAuthorHandle={author.handle}
           onCancel={() => replying.setParentId(undefined)}
           className="mt-6"
         />

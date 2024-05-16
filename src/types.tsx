@@ -24,7 +24,7 @@ export type Comment = {
 
   content: string;
 
-  author: User;
+  authorId: string;
   postedAt: Date;
 
   replies?: Comment[];
@@ -41,7 +41,7 @@ export type Post = {
   content: string;
   images?: string[];
 
-  author: User;
+  authorId: string;
   postedAt: Date;
 
   replies: Comment[];

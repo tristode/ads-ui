@@ -1,6 +1,6 @@
 import { useAuthSession } from "@/lib/auth";
 import { sendMessage } from "@/lib/chat";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import Editor from "./editor";
 

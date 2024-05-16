@@ -1,77 +1,79 @@
 import Post from "@/components/post";
 import { ThemeProvider } from "@/components/theme-provider";
-import { useState } from "react";
 import {
-    createBrowserRouter,
-    Outlet,
-    RouterProvider,
-    useParams,
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  useParams,
 } from "react-router-dom";
-import Author from "./components/author";
 import Chats from "./components/chats";
-import Invite from "./components/invite";
 import { ReplyingProvider } from "./components/single-reply-box-provider";
 import { ChatsProvider } from "./lib/chat";
-import { DataProvider, usePostPreview, useSearchUsers } from "./lib/database";
+import { DataProvider, usePostPreview } from "./lib/database";
 import Navigation from "./components/navigation";
 import Homepage from "./homepage";
 import NewPost from "./components/new_post";
+import Feed from "./feed";
 
 function PostPage() {
-    const { id } = useParams();
-    const post = usePostPreview(id || "");
+  const { id } = useParams();
+  const post = usePostPreview(id || "");
 
-    return post && <Post post={post} />;
+  return post && <Post post={post} />;
 }
 
 const router = createBrowserRouter([
-    {
-        path: "/",
+  {
+    path: "/",
+    element: (
+      <>
+        <div className="pb-16 md:pb-0 md:pt-16">
+          <Outlet />
+        </div>
+        <Navigation />
+      </>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Homepage />,
+      },
+      {
+        path: "/feed",
+        element: <Feed />,
+      },
+      {
+        path: "post/:id",
+        element: <PostPage />,
+      },
+      {
+        path: "chats",
         element: (
-            <>
-                <div className="pb-16 md:pb-0 md:pt-16">
-                    <Outlet />
-                </div>
-                <Navigation />
-            </>
+          <div className="h-screen">
+            <Chats />
+          </div>
         ),
-        children: [
-            {
-                index: true,
-                element: <Homepage />,
-            },
-            {
-                path: "post/:id",
-                element: <PostPage />,
-            },
-            {
-                path: "chats",
-                element: (
-                    <div className="h-screen">
-                        <Chats />
-                    </div>
-                ),
-            },
-            {
-                path: "new-post",
-                element: <NewPost />,
-            }
-        ],
-    },
+      },
+      {
+        path: "new-post",
+        element: <NewPost />,
+      },
+    ],
+  },
 ]);
 
 function App() {
-    return (
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <DataProvider>
-                <ReplyingProvider>
-                    <ChatsProvider>
-                        <RouterProvider router={router} />
-                    </ChatsProvider>
-                </ReplyingProvider>
-            </DataProvider>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <DataProvider>
+        <ReplyingProvider>
+          <ChatsProvider>
+            <RouterProvider router={router} />
+          </ChatsProvider>
+        </ReplyingProvider>
+      </DataProvider>
+    </ThemeProvider>
+  );
 }
 
 export default App;

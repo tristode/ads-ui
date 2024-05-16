@@ -9,6 +9,7 @@ import {
 import { Button } from "./ui/button";
 import Checkmark from "./ui/checkmark";
 import { useChatCreatorWithUser } from "@/lib/chat";
+import { useFollowActions } from "@/lib/database";
 
 export default function Author({
   user,
@@ -18,6 +19,7 @@ export default function Author({
   children?: React.ReactNode;
 }) {
   const createChat = useChatCreatorWithUser();
+  const { follow, unfollow } = useFollowActions();
 
   return (
     <HoverCard>
@@ -61,8 +63,15 @@ export default function Author({
             <span className="text-sm text-gray-500">{user.bio}</span>
           )}
           <div className="flex flex-row w-full gap-2">
-            <Button variant="accent" size="sm" className="font-bold w-full">
-              Follow
+            <Button
+              variant={user.amFollowing ? "default" : "accent"}
+              size="sm"
+              className="font-bold w-full"
+              onClick={() =>
+                user.amFollowing ? unfollow(user.id) : follow(user.id)
+              }
+            >
+              {user.amFollowing ? "Unfollow" : "Follow"}
             </Button>
             <Button
               variant="accent"
