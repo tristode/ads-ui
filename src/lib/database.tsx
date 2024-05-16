@@ -6,7 +6,6 @@ import { User } from "../types";
 import { NewPostForm } from "@/types";
 import { z } from "zod";
 import { Session } from "@supabase/supabase-js";
-import { useAutoResizeTextarea } from "./use-auto-resize-textarea";
 
 type Cache = {
   users: Record<string, User>;
