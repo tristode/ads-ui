@@ -1,6 +1,6 @@
 import { MdOutlineClose } from "react-icons/md";
 import { Button } from "./ui/button";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { FaPlus } from "react-icons/fa";
 
 export default function ImageUploader({
@@ -11,7 +11,8 @@ export default function ImageUploader({
     notUploadedImages,
     setNotUploadedImages,
     notDeletedImages,
-    setNotDeletedImages
+    setNotDeletedImages,
+    className,
 }: {
     imagesToDelete: { image: string; index: number }[];
     setImagesToDelete: (_: { image: string; index: number }[]) => void;
@@ -21,6 +22,7 @@ export default function ImageUploader({
     setNotUploadedImages: (_: File[]) => void;
     notDeletedImages: string[];
     setNotDeletedImages: (_: string[]) => void;
+    className?: string;
 }) {
     const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e?.target?.files?.[0];
@@ -35,7 +37,7 @@ export default function ImageUploader({
     }
 
     return (
-        <div className="mt-3 flex-col gap-2">
+        <div className={`mt-3 flex-col gap-2 ${className}`}>
             <div className="flex flex-wrap items-center gap-2">
                 {notDeletedImages &&
                     notDeletedImages.map((image, index) => (
@@ -94,6 +96,7 @@ export default function ImageUploader({
                     variant="round"
                     size="icon"
                     onClick={() => document.getElementById("file-upload")?.click()}
+                    className="bg-gray-600"
                 >
                     <FaPlus className="text-lg" />
                 </Button>

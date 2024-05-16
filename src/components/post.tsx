@@ -17,7 +17,7 @@ import {
     useUser,
 } from "@/lib/database";
 import { Button } from "./ui/button";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import Editor from "./editor";
 import { updatePost } from "@/lib/database";
 import { useAuthSession } from "@/lib/auth";
@@ -63,19 +63,13 @@ export default function PostCard({
 
                 const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${url.path}`;
                 oldImages = [...(oldImages ?? []), path];
-                console.log("added", oldImages);
             }
-
-            console.log("added all", oldImages);
 
             for (const { image, index } of imagesToDelete) {
                 deleteImage(image.slice(77));
                 if (!oldImages) continue;
                 oldImages = oldImages.filter((_, i) => i !== index);
-                console.log("deleted", oldImages);
             }
-
-            console.log("deleted all", oldImages);
 
             setPostImages(oldImages);
             await updatePost(post.id, {
