@@ -4,6 +4,7 @@ import { Input } from "./components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useNavigate } from "react-router-dom";
 
 import {
     Form,
@@ -14,6 +15,9 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { createUser } from "./lib/database";
+import { useAuthSession } from "./lib/auth";
+import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
     username: z.string().min(2, {
@@ -26,6 +30,8 @@ const FormSchema = z.object({
 })
 
 export default function CreateProfilePage() {
+    const session = useAuthSession(true);
+    const navigate = useNavigate();
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -34,9 +40,17 @@ export default function CreateProfilePage() {
             aboutMe: "",
         },
     });
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(data);
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+        await createUser(session, data.handle, data.username, undefined, data.aboutMe);
+        navigate("/");
     }
+    useEffect(() => {
+        form.reset({
+            username: session?.user?.user_metadata?.full_name ?? "",
+            handle: session?.user?.email?.split("@")?.[0]?.split(".")?.[0] ?? "",
+            aboutMe: "",
+        });
+    }, [session]);
 
     return (
         <div className="w-full p-8 flex flex-col items-center justify-center">

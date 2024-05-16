@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuthSession } from "@/lib/auth";
 
 export default function Auth() {
-  const session = useAuthSession();
+  const session = useAuthSession(true);
 
   if (!session) {
     return (

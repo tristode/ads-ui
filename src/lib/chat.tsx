@@ -82,7 +82,7 @@ export function ChatsProvider({
 }: React.PropsWithChildren<{}>) {
   const [chats, setChats] = useState<Chat[]>([]);
   const [chatMembers, setChatMembers] = useState<Record<string, string[]>>({});
-  const session = useAuthSession();
+  const session = useAuthSession(true);
 
   useEffect(() => {
     const fetcher = async () => {
