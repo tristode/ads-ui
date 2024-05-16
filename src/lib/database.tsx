@@ -9,7 +9,7 @@ import { Session } from "@supabase/supabase-js";
 import { useAutoResizeTextarea } from "./use-auto-resize-textarea";
 
 type Cache = {
-  users: ecord<string, User>;
+  users: Record<string, User>;
   setUsers: (
     users:
       | ((users: Record<string, User>) => Record<string, User>)
