@@ -17,6 +17,7 @@ import Feed from "./feed";
 import CreateProfile from "./create-profile";
 import ProfilePage from "./userpage";
 import LatestPost from "./latest";
+import EditProfilePage from "./editprofile";
 function PostPage() {
   const { id } = useParams();
   const post = usePostPreview(id || "");
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: "/users/:userId",
         element: <ProfilePage />,
+      },
+      {
+        path: "/edituser/:userId",
+        element: <EditProfilePage />,
       },
     ],
   },
