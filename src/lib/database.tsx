@@ -214,6 +214,7 @@ export const useLatestPosts = (
   const { setPosts, users, setUsers } = useCache();
   const [latestPosts, setLatestPosts] = useState<Post[] | null>(null);
   const [hasMore, setHasMore] = useState(true);
+  const session = useAuthSession();
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -229,12 +230,11 @@ export const useLatestPosts = (
       .order("posted_at", { ascending: false })
       .limit(nPosts);
 
-    console.log(data);
     if (error) {
       console.error("Error gettig posts: ", error);
     }
     const postsList = (data ?? []).map((post) =>
-      parsePost(post, users, setUsers)
+      parsePost(post, users, setUsers, session?.user.id)
     );
     setLatestPosts(postsList);
     setHasMore(postsList.length >= nPosts); // TODO: properly handle this
@@ -247,7 +247,7 @@ export const useLatestPosts = (
 
   useEffect(() => {
     fetchPosts();
-  }, [nPosts]);
+  }, [nPosts, session]);
 
   return { posts: latestPosts, hasMore };
 };
@@ -396,21 +396,6 @@ export const unlikePost = async (
     return;
   }
 
-  const { data, error: err } = await supabase
-    .from("post_likes")
-    .select()
-    .eq("post_id", postId)
-    .eq("user_id", session.user.id)
-    .single();
-
-  if (err) {
-    console.error("Failed to get post: ", err);
-  }
-
-  if (!data) {
-    return;
-  }
-
   const { error } = await supabase
     .from("post_likes")
     .delete()
@@ -426,14 +411,16 @@ export const unlikePost = async (
   if (!post) {
     return;
   }
-  post.reactions = post.reactions || { like: 0 };
+  post.reactions = post.reactions || { like: 1 };
   if (post.reactions.like <= 0) {
     return;
   }
   post.reactions.like--;
 
   post.reactedByLoggedInUser = post.reactedByLoggedInUser || [];
-  post.reactedByLoggedInUser.filter((x) => x != "like");
+  post.reactedByLoggedInUser = post.reactedByLoggedInUser.filter(
+    (x) => x !== "like"
+  );
 
   setPosts((posts) => ({ ...posts, postId: post }));
 };
@@ -518,7 +505,7 @@ export const usePostsFromFollows = (
       console.error("Error gettig posts: ", error);
     }
     const postsList = (data ?? []).map((post) =>
-      parsePost(post, users, setUsers)
+      parsePost(post, users, setUsers, session.user.id)
     );
     setFollowedPosts(postsList);
     setHasMore(postsList.length >= postCount); // TODO: properly handle this
