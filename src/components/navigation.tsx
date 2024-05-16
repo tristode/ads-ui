@@ -46,7 +46,7 @@ export default function Navigation() {
                 <Button className="text-lg p-4 bg-gray-800 rounded-full text-black dark:text-white" size="none"><IoChatboxEllipsesOutline /></Button>
             </Link>
             <Link to="/latest">
-                <Button>Latest</Button>
+                <Button className="text-lg p-4 bg-gray-800 rounded-full text-black dark:text-white" size="none"><MdOutlinePostAdd /></Button>
             </Link>
             <Auth />
             <ModeToggle />
