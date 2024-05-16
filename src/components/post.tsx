@@ -16,6 +16,7 @@ import { useState } from "react";
 import Editor from "./editor";
 import { updatePost } from "@/lib/database";
 import { useAuthSession } from "@/lib/auth";
+import ImageUploader from "./image-uploader";
 
 export default function PostCard({
     post,
@@ -30,9 +31,11 @@ export default function PostCard({
     const [notEditing, setNotEditing] = useState(true);
     const [postName, setPostTitle] = useState(post.title);
     const [postContent, setPostContent] = useState(post.content);
+    const [postImages, setPostImages] = useState(post.images);
     const session = useAuthSession();
     const submitUpdatePost = async () => {
         await updatePost(post.id, {
+            images: postImages,
             title: postName,
             content: postContent,
             author: session?.user?.id || "",
@@ -62,43 +65,45 @@ export default function PostCard({
                                 ))}
                             </div>
                         )}
-                        <div className="absolute right-2 flex">
-                            {notEditing ? (
-                                <Button
-                                    onClick={() => setNotEditing(false)}
-                                    variant="ghost"
-                                >
-                                    <FaEdit className="text-lg text-gray-200" />
-                                </Button>
-                            ) : (
-                                <>
+                        {author?.id !== session?.user?.id &&
+                            <div className="absolute right-2 flex">
+                                {notEditing ? (
                                     <Button
-                                        onClick={() => {
-                                            setPostTitle(post.title);
-                                            setPostContent(post.content);
-                                            setNotEditing(true);
-                                        }}
+                                        onClick={() => setNotEditing(false)}
                                         variant="ghost"
                                     >
-                                        <MdOutlineCancel className="text-lg text-gray-200" />
+                                        <FaEdit className="text-lg text-gray-200" />
                                     </Button>
-                                    <Button
-                                        onClick={() => submitUpdatePost()}
-                                        variant="ghost"
-                                    >
-                                        <MdSave className="text-lg text-gray-200" />
-                                    </Button>
-                                </>
-                            )}
-                        </div>
+                                ) : (
+                                    <>
+                                        <Button
+                                            onClick={() => {
+                                                setPostTitle(post.title);
+                                                setPostContent(post.content);
+                                                setNotEditing(true);
+                                            }}
+                                            variant="ghost"
+                                        >
+                                            <MdOutlineCancel className="text-lg text-gray-200" />
+                                        </Button>
+                                        <Button
+                                            onClick={() => submitUpdatePost()}
+                                            variant="ghost"
+                                        >
+                                            <MdSave className="text-lg text-gray-200" />
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        }
                     </div>
                     {notEditing ? (
                         <>
                             <h3 className="mt-3 text-xl font-semibold">
                                 {postName}
                             </h3>
-                            {post.images && post.images.length > 0 && (
-                                <Gallery images={post.images} />
+                            {postImages && postImages.length > 0 && (
+                                <Gallery images={postImages} />
                             )}
                             <div className="mt-3 space-y-2">{postContent}</div>
                         </>
@@ -116,6 +121,10 @@ export default function PostCard({
                                 value={postContent}
                                 onChange={setPostContent}
                                 className="w-full flex-grow self-start"
+                            />
+                            <ImageUploader
+                                images={postImages}
+                                setImages={setPostImages}
                             />
                         </div>
                     )}
@@ -162,7 +171,7 @@ export default function PostCard({
                     parentId={null}
                     className={
                         post.id === replying.parentId ||
-                        (exclusive && !replying.parentId)
+                            (exclusive && !replying.parentId)
                             ? ""
                             : "hidden sm:block"
                     }
