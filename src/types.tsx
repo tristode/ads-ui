@@ -19,6 +19,8 @@ export type User = {
 };
 
 export type Comment = {
+  parentPost: string,
+  parentComment?: string,
   id: string;
   permalink: string;
 

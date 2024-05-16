@@ -96,6 +96,7 @@ const parsePost = (
             z.date()
           ),
           parent_comment: z.string().nullable(),
+          parent_post: z.string(),
           profiles: z.object({
             id: z.string(),
             handle: z.string(),
@@ -142,6 +143,8 @@ const parsePost = (
         };
 
         return {
+          parentPost: comment.parent_post,
+          parentComment: comment.parent_comment ?? undefined,
           id: comment.id,
           content: comment.content,
           postedAt: comment.posted_at,
@@ -487,6 +490,96 @@ export const usePostLikeActions = (
     like: () => likePost(session, postId, posts, setPosts),
     unlike: () => unlikePost(session, postId, posts, setPosts),
   };
+};
+
+export const unlikeComment = async (
+  session: Session | null,
+  postId: string,
+  commentId: string,
+  posts: Record<string, Post>,
+  setPosts: (
+    update: (posts: Record<string, Post>) => Record<string, Post>
+  ) => void
+): Promise<void> => {
+  if (!session) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("comment_likes")
+    .delete()
+    .eq("comment_id", commentId)
+    .eq("user_id", session.user.id);
+
+  if (error) {
+    console.error("Failed to unlike comment: ", error);
+    return;
+  }
+
+  const post = posts[postId];
+  if (!post) {
+    return;
+  }
+  const comment = post.replies.find(
+    (x) => x.id === commentId
+  );
+  if (!comment) {
+      return;
+  }
+  comment.reactions = comment.reactions || { like: 1 };
+  if (comment.reactions.like <= 0) {
+    return;
+  }
+  comment.reactions.like--;
+
+  comment.reactedByLoggedInUser = comment.reactedByLoggedInUser || [];
+  comment.reactedByLoggedInUser = comment.reactedByLoggedInUser.filter(
+    (x) => x !== "like"
+  );
+
+  setPosts((posts) => ({ ...posts, postId: post }));
+};
+
+export const likeComment = async (
+  session: Session | null,
+  postId: string,
+  commentId: string,
+  posts: Record<string, Post>,
+  setPosts: (
+    update: (posts: Record<string, Post>) => Record<string, Post>
+  ) => void
+): Promise<void> => {
+  if (!session) {
+    return;
+  }
+
+  const { error } = await supabase.from("comment_likes").insert({
+    comment_id: commentId,
+    user_id: session.user.id,
+  });
+
+  if (error) {
+    console.error("Failed to like comment: ", error);
+    return;
+  }
+
+  const post = posts[postId];
+  if (!post) {
+    return;
+  }
+  const comment = post.replies.find(
+    (x) => x.id === commentId
+  );
+  if (!comment) {
+      return;
+  }
+  comment.reactions = comment.reactions || { like: 1 };
+  comment.reactions.like++;
+
+  comment.reactedByLoggedInUser = comment.reactedByLoggedInUser || [];
+  comment.reactedByLoggedInUser.push("like");
+
+  setPosts((posts) => ({ ...posts, postId: post }));
 };
 
 export const usePostsFromFollows = (
