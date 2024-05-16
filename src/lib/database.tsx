@@ -902,6 +902,14 @@ export const uploadImage = async (file: File, userId: string) => {
   return data;
 };
 
+export const deleteImage = async (path: string) => {
+    const { error } = await supabase.storage.from('PostImages').remove([path]);
+
+    if (error) {
+        console.error("Failed to delete image: ", error);
+    }
+}
+
 export async function createUser(
   session: Session | null,
   handle: string,

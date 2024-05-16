@@ -1,18 +1,27 @@
 import { MdOutlineClose } from "react-icons/md";
 import { Button } from "./ui/button";
 import { ChangeEvent, useState } from "react";
-import { uploadImage } from "@/lib/database";
-import { useAuthSession } from "@/lib/auth";
+import { FaPlus } from "react-icons/fa";
 
 export default function ImageUploader({
-    images,
-    setImages,
+    imagesToDelete,
+    setImagesToDelete,
+    imagesToUpload,
+    setImagesToUpload,
+    notUploadedImages,
+    setNotUploadedImages,
+    notDeletedImages,
+    setNotDeletedImages
 }: {
-    setImages: (_: string[]) => void;
-    images: string[] | undefined;
+    imagesToDelete: { image: string; index: number }[];
+    setImagesToDelete: (_: { image: string; index: number }[]) => void;
+    imagesToUpload: File[];
+    setImagesToUpload: (_: File[]) => void;
+    notUploadedImages: File[];
+    setNotUploadedImages: (_: File[]) => void;
+    notDeletedImages: string[];
+    setNotDeletedImages: (_: string[]) => void;
 }) {
-    const session = useAuthSession();
-
     const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e?.target?.files?.[0];
         if (!file) {
@@ -20,59 +29,75 @@ export default function ImageUploader({
             return;
         }
 
-        const url = await uploadImage(file, session?.user?.id ?? "");
-        if (!url) {
-            console.error("Failed to upload image");
-            return;
-        }
+        setNotUploadedImages([...notUploadedImages, file]);
 
-        console.log("Uploaded image: ", url);
-
-        const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${url.path}`;
-
-        const newImages = [...(images ?? []), path];
-
-        setImages(newImages);
-
-        console.log("Images now: ", images);
-    };
+        setImagesToUpload([...imagesToUpload, file]);
+    }
 
     return (
-        <div className="mt-3 flex flex-wrap gap-2">
-            {images &&
-                images.map((image, index) => (
-                    <div key={image} className="relative">
+        <div className="mt-3 flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+                {notDeletedImages &&
+                    notDeletedImages.map((image, index) => (
+                        <div key={image} className="relative">
+                            <Button
+                                onClick={() => {
+                                    setNotDeletedImages(
+                                        notDeletedImages.filter((_, i) => i !== index)
+                                    );
+                                    setImagesToDelete([...imagesToDelete, { image, index }]);
+                                }}
+                                variant="round"
+                                size="xs"
+                                className="absolute right-0 top-0"
+                            >
+                                <MdOutlineClose className="text-lg" />
+                            </Button>
+                            <img
+                                src={image}
+                                alt={`Image ${index + 1}`}
+                                className="h-20 w-20 rounded-lg object-cover"
+                            />
+                        </div>
+                    ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+                {notUploadedImages.map((file, index) => (
+                    <div key={file.name} className="relative">
+                        <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Image ${index + 1}`}
+                            className="h-16 w-16 rounded-lg object-cover opacity-40"
+                        />
                         <Button
-                            onClick={() =>
-                                setImages(images.filter((_, i) => i !== index))
-                            }
+                            onClick={() => {
+                                setNotUploadedImages(
+                                    notUploadedImages.filter((_, i) => i !== index)
+                                );
+                            }}
                             variant="round"
                             size="xs"
                             className="absolute right-0 top-0"
                         >
                             <MdOutlineClose className="text-lg" />
                         </Button>
-                        <img
-                            src={image}
-                            alt={`Image ${index + 1}`}
-                            className="h-20 w-20 rounded-lg object-cover"
-                        />
                     </div>
                 ))}
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                id="file-upload"
-                hidden
-            />
-            <Button
-                variant="round"
-                size="xs"
-                onClick={() => document.getElementById("file-upload")?.click()}
-            >
-                Add Image
-            </Button>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    id="file-upload"
+                    hidden
+                />
+                <Button
+                    variant="round"
+                    size="icon"
+                    onClick={() => document.getElementById("file-upload")?.click()}
+                >
+                    <FaPlus className="text-lg" />
+                </Button>
+            </div>
         </div>
     );
 }

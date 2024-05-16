@@ -10,9 +10,14 @@ import { FaEdit, FaHeart } from "react-icons/fa";
 import { MdOutlineCancel, MdSave, MdShare } from "react-icons/md";
 import { useReplying } from "./single-reply-box-provider";
 import { ShareButton } from "./ui/share-button";
-import { usePostLikeActions, useUser } from "@/lib/database";
+import {
+    deleteImage,
+    uploadImage,
+    usePostLikeActions,
+    useUser,
+} from "@/lib/database";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Editor from "./editor";
 import { updatePost } from "@/lib/database";
 import { useAuthSession } from "@/lib/auth";
@@ -33,15 +38,62 @@ export default function PostCard({
     const [postName, setPostTitle] = useState(post.title);
     const [postContent, setPostContent] = useState(post.content);
     const [postImages, setPostImages] = useState(post.images);
+    const [imagesToDelete, setImagesToDelete] = useState<
+        { image: string; index: number }[]
+    >([]);
+    const [imagesToUpload, setImagesToUpload] = useState<File[]>([]);
+    const [notUploadedImages, setNotUploadedImages] =
+        useState<File[]>(imagesToUpload);
+    const [notDeletedImages, setNotDeletedImages] = useState<string[]>(
+        postImages || [],
+    );
+    const [saving, setSaving] = useState(false);
     const session = useAuthSession();
+
     const submitUpdatePost = async () => {
-        await updatePost(post.id, {
-            images: postImages,
-            title: postName,
-            content: postContent,
-            author: session?.user?.id || "",
-        });
-        setNotEditing(true);
+        setSaving(true);
+        try {
+            let oldImages = postImages;
+            for (const file of imagesToUpload) {
+                const url = await uploadImage(file, session?.user?.id || "");
+                if (!url) {
+                    console.error("Failed to upload image");
+                    return "";
+                }
+
+                const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${url.path}`;
+                oldImages = [...(oldImages ?? []), path];
+                console.log("added", oldImages);
+            }
+
+            console.log("added all", oldImages);
+
+            for (const { image, index } of imagesToDelete) {
+                deleteImage(image.slice(77));
+                if (!oldImages) continue;
+                oldImages = oldImages.filter((_, i) => i !== index);
+                console.log("deleted", oldImages);
+            }
+
+            console.log("deleted all", oldImages);
+
+            setPostImages(oldImages);
+            await updatePost(post.id, {
+                images: oldImages,
+                title: postName,
+                content: postContent,
+                author: session?.user?.id || "",
+            });
+            setNotEditing(true);
+            setNotDeletedImages(oldImages || []);
+            setNotUploadedImages([]);
+            setImagesToUpload([]);
+            setImagesToDelete([]);
+        } catch (error) {
+            console.error("Error updating post:", error);
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -66,14 +118,18 @@ export default function PostCard({
                                 ))}
                             </div>
                         )}
-                        {author?.id === session?.user?.id &&
+                        {author?.id === session?.user?.id && (
                             <div className="absolute right-2 flex">
                                 {notEditing ? (
                                     <Button
                                         onClick={() => setNotEditing(false)}
                                         variant="ghost"
                                     >
-                                        <FaEdit className="text-lg text-gray-200" />
+                                        {saving ? (
+                                            "Saving"
+                                        ) : (
+                                            <FaEdit className="text-lg text-gray-200" />
+                                        )}
                                     </Button>
                                 ) : (
                                     <>
@@ -96,7 +152,7 @@ export default function PostCard({
                                     </>
                                 )}
                             </div>
-                        }
+                        )}
                     </div>
                     {notEditing ? (
                         <>
@@ -124,16 +180,24 @@ export default function PostCard({
                                 className="w-full flex-grow self-start"
                             />
                             <ImageUploader
-                                images={postImages}
-                                setImages={setPostImages}
+                                imagesToDelete={imagesToDelete}
+                                setImagesToDelete={setImagesToDelete}
+                                imagesToUpload={imagesToUpload}
+                                setImagesToUpload={setImagesToUpload}
+                                notUploadedImages={notUploadedImages}
+                                setNotUploadedImages={setNotUploadedImages}
+                                notDeletedImages={notDeletedImages}
+                                setNotDeletedImages={setNotDeletedImages}
                             />
                         </div>
                     )}
                 </div>
                 {/** Reactions - the like button mainly */}
                 <div className="flex justify-around p-4">
-                    <div className="flex w-full cursor-pointer flex-col items-center"
-                        onClick={liked ? unlike : like}>
+                    <div
+                        className="flex w-full cursor-pointer flex-col items-center"
+                        onClick={liked ? unlike : like}
+                    >
                         <FaHeart
                             className={liked ? "text-red-500" : "text-gray-500"}
                         />
@@ -173,7 +237,7 @@ export default function PostCard({
                     parentId={null}
                     className={
                         post.id === replying.parentId ||
-                            (exclusive && !replying.parentId)
+                        (exclusive && !replying.parentId)
                             ? ""
                             : "hidden sm:block"
                     }
