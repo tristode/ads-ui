@@ -42,8 +42,8 @@ export default function Navigation() {
             <Link to="/chats">
                 <Button>Chats</Button>
             </Link>
-            <Link to="/post/0dbcdd10-b4f6-4223-9386-2992103da603">
-                <Button>Post</Button>
+            <Link to="/latest">
+                <Button>Latest</Button>
             </Link>
             <Auth />
             <ModeToggle />

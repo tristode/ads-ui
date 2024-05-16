@@ -16,6 +16,7 @@ import NewPost from "./components/new_post";
 import Feed from "./feed";
 import CreateProfile from "./create-profile";
 import ProfilePage from "./userpage";
+import LatestPost from "./latest";
 function PostPage() {
   const { id } = useParams();
   const post = usePostPreview(id || "");
@@ -40,8 +41,12 @@ const router = createBrowserRouter([
         element: <Homepage />,
       },
       {
-        path: "/feed",
+        path: "feed",
         element: <Feed />,
+      },
+      {
+        path: "latest",
+        element: <LatestPost />,
       },
       {
         path: "post/:id",
@@ -76,7 +81,7 @@ const router = createBrowserRouter([
       {
         path: "/users/:userId",
         element: <ProfilePage />,
-      }
+      },
     ],
   },
 ]);
