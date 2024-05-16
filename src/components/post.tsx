@@ -6,7 +6,7 @@ import Author from "./author";
 import Timedelta from "./ui/timedelta";
 import { BsChatLeftFill } from "react-icons/bs";
 import AddComment from "./add-comment";
-import { FaEdit, FaHeart } from "react-icons/fa";
+import { FaEdit, FaHeart, FaSpinner } from "react-icons/fa";
 import { MdOutlineCancel, MdSave, MdShare } from "react-icons/md";
 import { useReplying } from "./single-reply-box-provider";
 import { ShareButton } from "./ui/share-button";
@@ -125,11 +125,7 @@ export default function PostCard({
                                         onClick={() => setNotEditing(false)}
                                         variant="ghost"
                                     >
-                                        {saving ? (
-                                            "Saving"
-                                        ) : (
-                                            <FaEdit className="text-lg text-gray-200" />
-                                        )}
+                                        <FaEdit className="text-lg text-gray-200" />
                                     </Button>
                                 ) : (
                                     <>
@@ -147,7 +143,11 @@ export default function PostCard({
                                             onClick={() => submitUpdatePost()}
                                             variant="ghost"
                                         >
-                                            <MdSave className="text-lg text-gray-200" />
+                                            {saving ? (
+                                                <FaSpinner className="animate-spin text-gray-200" />
+                                            ) : (
+                                                <MdSave className="text-lg text-gray-200" />
+                                            )}
                                         </Button>
                                     </>
                                 )}
