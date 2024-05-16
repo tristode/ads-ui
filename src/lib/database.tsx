@@ -582,6 +582,22 @@ export const likeComment = async (
   setPosts((posts) => ({ ...posts, postId: post }));
 };
 
+export const useCommentLikeActions = (
+  postId: string,
+  commentId: string,
+): {
+  like: () => void;
+  unlike: () => void;
+} => {
+  const session = useAuthSession();
+  const { posts, setPosts } = useCache();
+
+  return {
+    like: () => likeComment(session, postId, commentId, posts, setPosts),
+    unlike: () => unlikeComment(session, postId, commentId, posts, setPosts),
+  };
+};
+
 export const usePostsFromFollows = (
   postCount: number
 ): { posts: Post[] | null; hasMore: boolean } => {
