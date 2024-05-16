@@ -10,7 +10,7 @@ import { FaEdit, FaHeart } from "react-icons/fa";
 import { MdOutlineCancel, MdSave, MdShare } from "react-icons/md";
 import { useReplying } from "./single-reply-box-provider";
 import { ShareButton } from "./ui/share-button";
-import { useUser } from "@/lib/database";
+import { usePostLikeActions, useUser } from "@/lib/database";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import Editor from "./editor";
@@ -28,6 +28,7 @@ export default function PostCard({
     const liked = post.reactedByLoggedInUser?.includes("like");
     const replying = useReplying();
     const author = useUser(post.authorId);
+    const { like, unlike } = usePostLikeActions(post.id);
     const [notEditing, setNotEditing] = useState(true);
     const [postName, setPostTitle] = useState(post.title);
     const [postContent, setPostContent] = useState(post.content);
@@ -131,7 +132,8 @@ export default function PostCard({
                 </div>
                 {/** Reactions - the like button mainly */}
                 <div className="flex justify-around p-4">
-                    <div className="flex w-full cursor-pointer flex-col items-center">
+                    <div className="flex w-full cursor-pointer flex-col items-center"
+                        onClick={liked ? unlike : like}>
                         <FaHeart
                             className={liked ? "text-red-500" : "text-gray-500"}
                         />

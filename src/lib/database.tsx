@@ -58,7 +58,8 @@ const parsePost = (
   users: Record<string, User>,
   setUsers: (
     update: (users: Record<string, User>) => Record<string, User>
-  ) => void
+  ) => void,
+  activeUserId?: string
 ): Post => {
   let parser = z.object({
     id: z.string(),
@@ -70,6 +71,14 @@ const parsePost = (
     posted_at: z.preprocess(
       (val) => (typeof val === "string" ? new Date(val) : val),
       z.date()
+    ),
+    post_likes: z.array(
+        z.object(
+            {
+                post_id: z.string(),
+                user_id: z.string(),
+            }
+        )
     ),
     profiles: z.object({
       id: z.string(),
@@ -148,7 +157,11 @@ const parsePost = (
     authorId: author.id,
     postedAt: parsedData.posted_at,
     replies: getReplies(null),
-    permalink: "",
+    permalink: `/posts/${parsedData.id}`,
+    reactions: {like: parsedData.post_likes.length},
+    reactedByLoggedInUser:
+        parsedData.post_likes.filter(x => x.user_id === activeUserId).length ?
+            ["like"] : [],
   };
 };
 
@@ -209,12 +222,14 @@ export const useLatestPosts = (
         `
                 *,
                 profiles!public_posts_author_fkey(*),
-                comments(*, profiles!public_comments_author_fkey(*))
+                comments(*, profiles!public_comments_author_fkey(*)),
+                post_likes(*)
             `
       )
       .order("posted_at", { ascending: false })
       .limit(nPosts);
 
+    console.log(data);
     if (error) {
       console.error("Error gettig posts: ", error);
     }
@@ -417,6 +432,9 @@ export const unlikePost = async (
   }
   post.reactions.like--;
 
+  post.reactedByLoggedInUser = post.reactedByLoggedInUser || [];
+  post.reactedByLoggedInUser.filter(x => x != "like");
+
   setPosts((posts) => ({ ...posts, postId: post }));
 }
 
@@ -451,19 +469,22 @@ export const likePost = async (
   post.reactions = post.reactions || {like: 0};
   post.reactions["like"]++;
 
+  post.reactedByLoggedInUser = post.reactedByLoggedInUser || [];
+  post.reactedByLoggedInUser.push("like");
+
   setPosts((posts) => ({ ...posts, postId: post }));
 }
 
-export const usePostLikeActions = (): {
-  like: (postId: string) => void;
-  unlike: (postId: string) => void;
+export const usePostLikeActions = (postId: string): {
+  like: () => void;
+  unlike: () => void;
 } => {
   const session = useAuthSession();
   const { posts, setPosts } = useCache();
 
   return {
-    like: (postId: string) => likePost(session, postId, posts, setPosts),
-    unlike: (postId: string) => unlikePost(session, postId, posts, setPosts),
+    like: () => likePost(session, postId, posts, setPosts),
+    unlike: () => unlikePost(session, postId, posts, setPosts),
   };
 };
 
