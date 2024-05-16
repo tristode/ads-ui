@@ -15,7 +15,7 @@ import Homepage from "./homepage";
 import NewPost from "./components/new_post";
 import Feed from "./feed";
 import CreateProfile from "./create-profile";
-
+import ProfilePage from "./userpage";
 function PostPage() {
   const { id } = useParams();
   const post = usePostPreview(id || "");
@@ -73,6 +73,10 @@ const router = createBrowserRouter([
         path: "/create-profile",
         element: <CreateProfile />,
       },
+      {
+        path: "/users/:userId",
+        element: <ProfilePage />,
+      }
     ],
   },
 ]);
