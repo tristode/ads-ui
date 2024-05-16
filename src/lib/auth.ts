@@ -3,21 +3,27 @@ import { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
 export function signIn(redirectTo?: string) {
+  const redirectLocation = new URL(
+    redirectTo ?? "/create-profile",
+    window.location.href
+  );
   supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo },
+    options: {
+      redirectTo: redirectLocation.origin + redirectLocation.pathname,
+    },
   });
 }
 
 export function logOut() {
-  const doLogout = async() =>{
+  const doLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Failed to log out: ", error);
     }
-  }
+  };
   doLogout();
-};
+}
 
 export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
   const [session, setSession] = useState<Session | null>(null);
@@ -41,7 +47,7 @@ export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
       return;
     }
 
-    const {data, error} = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select()
       .eq("id", session.user.id)
@@ -54,15 +60,11 @@ export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
     if (!data && !keepLoggedIn) {
       logOut();
     }
+  };
 
-  }
-
-  useEffect(
-    () => {
-      checkUserExists();
-    },
-    [session]
-  );
+  useEffect(() => {
+    checkUserExists();
+  }, [session]);
 
   return session;
 }

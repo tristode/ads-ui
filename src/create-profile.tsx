@@ -32,6 +32,7 @@ const FormSchema = z.object({
 export default function CreateProfilePage() {
   const session = useAuthSession(true);
   const navigate = useNavigate();
+  const [loaded, setLoaded] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -61,69 +62,71 @@ export default function CreateProfilePage() {
       if (exists) {
         navigate("/");
       }
+      setLoaded(true);
     });
   }, [session]);
 
   return (
-    <div className="w-full p-8 flex flex-col items-center justify-center">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="max-w-96 w-full flex flex-col border-4 rounded-md gap-4 p-4 bg-slate-200 dark:bg-slate-800"
-        >
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your name..." {...field} />
-                </FormControl>
-                <FormDescription>This is your display name.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    loaded && (
+      <div className="w-full p-8 flex flex-col items-center justify-center">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="max-w-96 w-full flex flex-col border-4 rounded-md gap-4 p-4 bg-slate-200 dark:bg-slate-800"
+          >
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your name..." {...field} />
+                  </FormControl>
+                  <FormDescription>This is your display name.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="handle"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Handle</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your @handle..." {...field} />
-                </FormControl>
-                <FormDescription>This is your @handle.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="handle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Handle</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your @handle..." {...field} />
+                  </FormControl>
+                  <FormDescription>This is your @handle.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="aboutMe"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel> About me:</FormLabel>
-                <FormControl>
-                  <Editor
-                    onChange={() => null}
-                    value=""
-                    className="bg-slate-950 rounded-lg"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="aboutMe"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel> About me:</FormLabel>
+                  <FormControl>
+                    <Editor
+                      onChange={() => null}
+                      value=""
+                      className="bg-slate-950 rounded-lg"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-          <Button variant="accent" type="submit">
-            Create profile!
-          </Button>
-        </form>
-      </Form>
-    </div>
+            <Button variant="accent" type="submit">
+              Create profile!
+            </Button>
+          </form>
+        </Form>
+      </div>
+    )
   );
 }
-
