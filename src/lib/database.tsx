@@ -614,6 +614,23 @@ export const createPost = async (post: NewPostForm) => {
     console.error("Failed to upload post: ", error);
   }
 };
+
+export const updatePost = async (postId: string, post: NewPostForm) => {
+  const { error } = await supabase
+    .from("posts")
+    .update({
+      title: post.title,
+      badges: post.badges ?? [],
+      content: post.content,
+      images: post.images ?? [],
+    })
+    .eq("id", postId);
+
+  if (error) {
+    console.error("Failed to update post: ", error);
+  }
+}
+
 //
 // export const useLatestPosts = async (count: number): Promise<Post[]> => {
 //     const { posts, setPosts } = useCache();
