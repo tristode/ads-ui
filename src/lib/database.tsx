@@ -320,8 +320,9 @@ export const unfollowUser = async (
   if (!user) {
     return;
   }
+  user.amFollowing = false;
 
-  setUsers((users) => ({ ...users, userId: { ...user, amFollowing: false } }));
+  setUsers((users) => ({ ...users, userId: user }));
 };
 
 export const followUser = async (
@@ -350,8 +351,9 @@ export const followUser = async (
   if (!user) {
     return;
   }
+  user.amFollowing = true;
 
-  setUsers((users) => ({ ...users, userId: { ...user, amFollowing: true } }));
+  setUsers((users) => ({ ...users, userId: user }));
 };
 
 export const useFollowActions = (): {
