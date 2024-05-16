@@ -14,13 +14,12 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast";
 
 const FormSchema = z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters.",
     }),
-    nickname: z.string().max(4, {
+    handle: z.string().max(4, {
         message: "Handle must be at most 4 characters.",
     }),
     aboutMe: z.string(),
@@ -31,7 +30,7 @@ export default function CreateProfilePage() {
         resolver: zodResolver(FormSchema),
         defaultValues: {
             username: "",
-            nickname: "",
+            handle: "",
             aboutMe: "",
         },
     });
@@ -50,10 +49,10 @@ export default function CreateProfilePage() {
                             <FormItem>
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder=" Input your name..." {...field} />
+                                    <Input placeholder="Your name..." {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    This is your private display name.
+                                    This is your display name.
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -62,15 +61,15 @@ export default function CreateProfilePage() {
 
                     <FormField
                         control={form.control}
-                        name="nickname"
+                        name="handle"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Handle</FormLabel>
                                 <FormControl>
-                                    <Input placeholder=" Input your username..." {...field} />
+                                    <Input placeholder="Your @handle..." {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    This is your public display name.
+                                    This is your @handle.
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>)}
