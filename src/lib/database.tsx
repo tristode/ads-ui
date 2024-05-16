@@ -759,6 +759,17 @@ export const updatePost = async (postId: string, post: NewPostForm) => {
   }
 };
 
+export const uploadImage = async (fileBase64: string) => {
+    const filename = `${new Date().getTime()}.png`;
+    const { data, error } = await supabase.storage.from('PostImages').upload(filename, fileBase64);
+
+    if (error) {
+        console.error("Failed to upload image: ", error);
+    }
+
+    return data;
+}
+
 //
 // export const useLatestPosts = async (count: number): Promise<Post[]> => {
 //     const { posts, setPosts } = useCache();
