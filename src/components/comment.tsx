@@ -1,5 +1,9 @@
 import { signIn, useAuthSession } from "@/lib/auth";
-import { useDeleteComment, useUser } from "@/lib/database";
+import {
+  useCommentLikeActions,
+  useDeleteComment,
+  useUser,
+} from "@/lib/database";
 import { Comment } from "@/types";
 import { FaHeart, FaReply, FaTrash } from "react-icons/fa";
 import { MdShare } from "react-icons/md";
@@ -21,6 +25,7 @@ export default function CommentCard({
   const replying = useReplying();
   const deleteComment = useDeleteComment();
   const author = useUser(comment.authorId);
+  const { like, unlike } = useCommentLikeActions(postId, comment.id);
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800">
@@ -37,7 +42,10 @@ export default function CommentCard({
       )}
       <div className="pl-8 mt-3">{comment.content}</div>
       <div className="flex items-center mt-3 pl-8 space-x-4 font-black">
-        <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1">
+        <button
+          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center gap-1"
+          onClick={liked ? unlike : like}
+        >
           <FaHeart className={liked ? "text-red-500" : "text-gray-500"} />
           {comment.reactions?.like
             ? comment.reactions.like === 1

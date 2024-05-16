@@ -105,13 +105,11 @@ const parsePost = (
             avatar: z.string(),
           }),
           comment_likes: z.array(
-              z.object(
-                  {
-                      comment_id: z.string(),
-                      user_id: z.string(),
-                  }
-              )
-          )
+            z.object({
+              comment_id: z.string(),
+              user_id: z.string(),
+            })
+          ),
         })
       )
       .default([]),
@@ -151,7 +149,7 @@ const parsePost = (
           authorId: author.id,
           replies: getReplies(comment.id),
           permalink: "",
-          reactions: {like: comment.comment_likes.length},
+          reactions: { like: comment.comment_likes.length },
           reactedByLoggedInUser: comment.comment_likes.filter(
             (x) => x.user_id === activeUserId
           ).length
@@ -520,11 +518,21 @@ export const unlikeComment = async (
   if (!post) {
     return;
   }
-  const comment = post.replies.find(
-    (x) => x.id === commentId
-  );
+  const findReply = (replies: Comment[], commentId: string): Comment | null => {
+    for (const reply of replies) {
+      if (reply.id === commentId) {
+        return reply;
+      }
+      const found = findReply(reply.replies ?? [], commentId);
+      if (found) {
+        return found;
+      }
+    }
+    return null;
+  };
+  const comment = findReply(post.replies, commentId);
   if (!comment) {
-      return;
+    return;
   }
   comment.reactions = comment.reactions || { like: 1 };
   if (comment.reactions.like <= 0) {
@@ -567,11 +575,21 @@ export const likeComment = async (
   if (!post) {
     return;
   }
-  const comment = post.replies.find(
-    (x) => x.id === commentId
-  );
+  const findReply = (replies: Comment[], commentId: string): Comment | null => {
+    for (const reply of replies) {
+      if (reply.id === commentId) {
+        return reply;
+      }
+      const found = findReply(reply.replies ?? [], commentId);
+      if (found) {
+        return found;
+      }
+    }
+    return null;
+  };
+  const comment = findReply(post.replies, commentId);
   if (!comment) {
-      return;
+    return;
   }
   comment.reactions = comment.reactions || { like: 1 };
   comment.reactions.like++;
@@ -584,7 +602,7 @@ export const likeComment = async (
 
 export const useCommentLikeActions = (
   postId: string,
-  commentId: string,
+  commentId: string
 ): {
   like: () => void;
   unlike: () => void;
@@ -869,41 +887,42 @@ export const updatePost = async (postId: string, post: NewPostForm) => {
 };
 
 export const uploadImage = async (fileBase64: string) => {
-    const filename = `${new Date().getTime()}.png`;
-    const { data, error } = await supabase.storage.from('PostImages').upload(filename, fileBase64);
+  const filename = `${new Date().getTime()}.png`;
+  const { data, error } = await supabase.storage
+    .from("PostImages")
+    .upload(filename, fileBase64);
 
-    if (error) {
-        console.error("Failed to upload image: ", error);
-    }
+  if (error) {
+    console.error("Failed to upload image: ", error);
+  }
 
-    return data;
-}
+  return data;
+};
 
 export async function createUser(
-    session: Session | null,
-    handle: string,
-    name?: string,
-    avatar_url?: string,
-    bio?: string | null,
+  session: Session | null,
+  handle: string,
+  name?: string,
+  avatar_url?: string,
+  bio?: string | null
 ) {
-    if (!session) {
-        return;
-    }
-    name = name ?? handle;
-    avatar_url = (avatar_url ?? session.user.user_metadata.avatar_url) ?? null;
-    bio = bio ?? null;
+  if (!session) {
+    return;
+  }
+  name = name ?? handle;
+  avatar_url = avatar_url ?? session.user.user_metadata.avatar_url ?? null;
+  bio = bio ?? null;
 
-    const { error } = await supabase.from("profiles")
-    .insert({
-        name,
-        avatar: avatar_url,
-        handle,
-        bio
-    });
+  const { error } = await supabase.from("profiles").insert({
+    name,
+    avatar: avatar_url,
+    handle,
+    bio,
+  });
 
-    if (error) {
-        console.error("Failed to follow user: ", error);
-    }
+  if (error) {
+    console.error("Failed to follow user: ", error);
+  }
 }
 
 //
