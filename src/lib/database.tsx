@@ -886,11 +886,14 @@ export const updatePost = async (postId: string, post: NewPostForm) => {
   }
 };
 
-export const uploadImage = async (fileBase64: string) => {
-  const filename = `${new Date().getTime()}.png`;
-  const { data, error } = await supabase.storage
-    .from("PostImages")
-    .upload(filename, fileBase64);
+export const uploadImage = async (file: File, userId: string) => {
+    if (!userId) {
+        console.error("No user ID provided");
+        return;
+    }
+
+    const filename = `${userId}/${new Date().getTime()}.png`;
+    const { data, error } = await supabase.storage.from('PostImages').upload(filename, file);
 
   if (error) {
     console.error("Failed to upload image: ", error);

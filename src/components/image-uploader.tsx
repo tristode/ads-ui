@@ -2,6 +2,7 @@ import { MdOutlineClose } from "react-icons/md";
 import { Button } from "./ui/button";
 import { ChangeEvent, useState } from "react";
 import { uploadImage } from "@/lib/database";
+import { useAuthSession } from "@/lib/auth";
 
 export default function ImageUploader({
     images,
@@ -10,22 +11,7 @@ export default function ImageUploader({
     setImages: (_: string[]) => void;
     images: string[] | undefined;
 }) {
-    const [postImage, setPostImage] = useState({
-        imgFile: "",
-    });
-
-    const convertToBase64 = (file: File) =>
-        new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-            fileReader.onload = () => {
-                resolve(fileReader.result);
-            };
-
-            fileReader.onerror = (error) => {
-                reject(error);
-            };
-        });
+    const session = useAuthSession();
 
     const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e?.target?.files?.[0];
@@ -34,13 +20,21 @@ export default function ImageUploader({
             return;
         }
 
-        const base64 = await convertToBase64(file);
-        if (typeof base64 !== "string") {
-            console.error("Failed to convert image to base64");
+        const url = await uploadImage(file, session?.user?.id ?? "");
+        if (!url) {
+            console.error("Failed to upload image");
             return;
         }
 
-        setPostImage({ ...postImage, imgFile: base64 });
+        console.log("Uploaded image: ", url);
+
+        const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${url.path}`;
+
+        const newImages = [...(images ?? []), path];
+
+        setImages(newImages);
+
+        console.log("Images now: ", images);
     };
 
     return (

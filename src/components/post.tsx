@@ -66,7 +66,7 @@ export default function PostCard({
                                 ))}
                             </div>
                         )}
-                        {author?.id !== session?.user?.id &&
+                        {author?.id === session?.user?.id &&
                             <div className="absolute right-2 flex">
                                 {notEditing ? (
                                     <Button
