@@ -5,6 +5,9 @@ import { Button } from "./ui/button";
 import Author from "./author";
 import { useSearchUsers } from "@/lib/database";
 import { useState } from "react";
+import { FaHome } from "react-icons/fa";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
+import { MdOutlinePostAdd } from "react-icons/md";
 
 function UserSearch() {
     const [query, setQuery] = useState("");
@@ -37,10 +40,10 @@ export default function Navigation() {
     return (
         <div className="fixed bottom-0 z-10 flex h-16 w-full items-center gap-2 bg-gray-900 p-4 md:bottom-auto md:top-0">
             <Link to="/">
-                <Button>HOME</Button>
+                <Button className="text-lg p-4 bg-gray-800 rounded-full text-black dark:text-white" size="none"><FaHome /></Button>
             </Link>
             <Link to="/chats">
-                <Button>Chats</Button>
+                <Button className="text-lg p-4 bg-gray-800 rounded-full text-black dark:text-white" size="none"><IoChatboxEllipsesOutline /></Button>
             </Link>
             <Link to="/latest">
                 <Button>Latest</Button>
