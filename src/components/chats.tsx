@@ -2,13 +2,21 @@ import {
   Chat,
   useChatCreator,
   useChatDeleter,
+  useChatMembers,
   useChatRenamer,
   useChats,
 } from "@/lib/chat";
+import { useUser } from "@/lib/database";
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ChatComponent from "./chat";
+
+function MemberPreview({ userId }: { userId: string }) {
+  const user = useUser(userId);
+
+  return <>{user?.name ?? ""}</>;
+}
 
 function ChatPreview({
   chat,
@@ -21,6 +29,7 @@ function ChatPreview({
 }) {
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState(chat.name || "");
+  const members = useChatMembers(chat.id);
 
   const renameChat = useChatRenamer(chat.id);
   const deleteChat = useChatDeleter(chat.id);
@@ -53,7 +62,13 @@ function ChatPreview({
           }}
         />
       ) : (
-        chat.name || "Unnamed Chat"
+        chat.name ||
+        members
+          .filter((member) => member !== chat.owner)
+          .map((member: string) => (
+            <MemberPreview key={member} userId={member} />
+          )) ||
+        "Unnamed Chat"
       )}
       <FaTrash
         className="text-transparent group-hover:text-gray-500 group-hover:dark:text-gray-400"
