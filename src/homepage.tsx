@@ -30,7 +30,7 @@ export default function Homepage() {
                 <Link to="/new-post">
                     <Button
                         variant="round"
-                        className={`fixed right-8 lg:right-[calc(50%-21rem-8rem)] bottom-20 md:bottom-8 text-lg`}
+                        className={`fixed right-8 lg:right-[calc(50%-21rem-8rem)] bottom-20 md:bottom-8 text-lg bg-slate-300 dark:bg-slate-700`}
                         size="round"
                     >
                         <FaPlus />

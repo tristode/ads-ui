@@ -96,7 +96,7 @@ export default function ImageUploader({
                     variant="round"
                     size="icon"
                     onClick={() => document.getElementById("file-upload")?.click()}
-                    className="bg-gray-600"
+                    className="bg-gray-400 dark:bg-gray-600"
                 >
                     <FaPlus className="text-lg" />
                 </Button>

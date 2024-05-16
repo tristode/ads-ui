@@ -119,7 +119,7 @@ export default function PostCard({
                                         onClick={() => setNotEditing(false)}
                                         variant="ghost"
                                     >
-                                        <FaEdit className="text-lg text-gray-200" />
+                                        <FaEdit className="text-lg text-gray-400 dark:text-gray-200" />
                                     </Button>
                                 ) : (
                                     <>

@@ -68,7 +68,7 @@ export default function NewPost() {
 
     return (
         <div className="mt-16 flex h-fit max-w-2xl flex-col items-end rounded-md bg-input md:mx-auto">
-            <div className="w-full self-start rounded-md bg-gray-900 flex">
+            <div className="w-full self-start rounded-md bg-gray-300 dark:bg-gray-900 flex">
                 <Avatar className="self-start rounded-md p-2">
                     <AvatarImage
                         src={session.user.user_metadata.avatar_url}
@@ -82,7 +82,7 @@ export default function NewPost() {
                 <input
                     type="text"
                     placeholder="Post name"
-                    className="w-full rounded-md bg-gray-900 p-2 text-white outline-none"
+                    className="w-full rounded-md bg-gray-300 dark:bg-gray-900 p-2 text-black dark:text-white outline-none"
                     value={postName}
                     onChange={(e) => setPostName(e.target.value)}
                 />
