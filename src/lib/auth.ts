@@ -13,7 +13,7 @@ export function logOut() {
   const doLogout = async() =>{
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.log("Failed to log out: ", error);
+      console.error("Failed to log out: ", error);
     }
   }
   doLogout();
@@ -46,7 +46,7 @@ export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
       .select()
       .eq("id", session.user.id)
       .single();
-    
+
     if (error) {
       console.error("Failed to fetch user data: ", error);
     }

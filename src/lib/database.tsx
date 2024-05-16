@@ -103,6 +103,14 @@ const parsePost = (
             bio: z.string().nullable(),
             avatar: z.string(),
           }),
+          comment_likes: z.array(
+              z.object(
+                  {
+                      comment_id: z.string(),
+                      user_id: z.string(),
+                  }
+              )
+          )
         })
       )
       .default([]),
@@ -140,6 +148,12 @@ const parsePost = (
           authorId: author.id,
           replies: getReplies(comment.id),
           permalink: "",
+          reactions: {like: comment.comment_likes.length},
+          reactedByLoggedInUser: comment.comment_likes.filter(
+            (x) => x.user_id === activeUserId
+          ).length
+            ? ["like"]
+            : [],
         };
       })
       .filter((comment): comment is Comment => comment !== null);
@@ -223,7 +237,7 @@ export const useLatestPosts = (
         `
                 *,
                 profiles!public_posts_author_fkey(*),
-                comments(*, profiles!public_comments_author_fkey(*)),
+                comments(*, profiles!public_comments_author_fkey(*), comment_likes(*)),
                 post_likes(*)
             `
       )
@@ -495,7 +509,8 @@ export const usePostsFromFollows = (
         `
                 *,
                 profiles!inner!public_posts_author_fkey(*, follows!inner!public_follows_followed_fkey(*)),
-                comments(*, profiles!public_comments_author_fkey(*))
+                comments(*, profiles!public_comments_author_fkey(*), comment_likes(*)),
+                post_likes(*),
             `
       )
       .eq("profiles.follows.follower", session.user.id)
