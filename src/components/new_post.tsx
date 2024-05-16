@@ -2,7 +2,7 @@ import { useState } from "react";
 import Editor from "./editor";
 import { Button } from "./ui/button";
 import { MdSend } from "react-icons/md";
-import { createPost, deleteImage, uploadImage } from "@/lib/database";
+import { createPost, deleteImage, uploadImage, useUser } from "@/lib/database";
 import { useAuthSession } from "@/lib/auth";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -23,6 +23,7 @@ export default function NewPost() {
     );
     const [saving, setSaving] = useState(false);
     const session = useAuthSession();
+    const me = useUser(session?.user?.id || "");
     const navigate = useNavigate();
     const submit = async () => {
         setSaving(true);
@@ -71,12 +72,12 @@ export default function NewPost() {
             <div className="w-full self-start rounded-md bg-gray-300 dark:bg-gray-900 flex">
                 <Avatar className="self-start rounded-md p-2">
                     <AvatarImage
-                        src={session.user.user_metadata.avatar_url}
-                        alt={session.user.user_metadata.name}
+                        src={me?.avatar}
+                        alt={me?.name}
                         className="rounded-full"
                     />
                     <AvatarFallback>
-                        {session.user.user_metadata.name[0]}
+                        {me?.name?.[0]}
                     </AvatarFallback>
                 </Avatar>
                 <input

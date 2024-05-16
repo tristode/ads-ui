@@ -1,5 +1,5 @@
 import { useAuthSession } from "@/lib/auth";
-import { useReplier } from "@/lib/database";
+import { useReplier, useUser } from "@/lib/database";
 import { cn } from "@/lib/utils";
 import { FormEvent, useState } from "react";
 import { MdClose, MdSend } from "react-icons/md";
@@ -22,6 +22,7 @@ export default function AddComment({
   const [content, setContent] = useState("");
   const session = useAuthSession();
   const reply = useReplier();
+  const me = useUser(session?.user.id ?? "");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -51,11 +52,11 @@ export default function AddComment({
           <span className="p-2">
             <Avatar className="h-6 w-6">
               <AvatarImage
-                alt={session.user.user_metadata.name}
-                src={session.user.user_metadata.avatar_url}
+                alt={me?.name}
+                src={me?.avatar}
               />
               <AvatarFallback>
-                {session.user.user_metadata.name[0]}
+                {me?.name[0]}
               </AvatarFallback>
             </Avatar>
           </span>
