@@ -928,6 +928,19 @@ export async function createUser(
   }
 }
 
+export async function userExists(userId: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error getting user data: ", error);
+  }
+
+  return !!data;
+}
+
 //
 // export const useLatestPosts = async (count: number): Promise<Post[]> => {
 //     const { posts, setPosts } = useCache();
