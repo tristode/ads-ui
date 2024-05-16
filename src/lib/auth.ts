@@ -42,7 +42,7 @@ export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
     }
 
     const {data, error} = await supabase
-      .from("profies")
+      .from("profiles")
       .select()
       .eq("id", session.user.id)
       .single();
