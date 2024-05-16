@@ -879,6 +879,33 @@ export const uploadImage = async (fileBase64: string) => {
     return data;
 }
 
+export async function createUser(
+    session: Session | null,
+    handle: string,
+    name?: string,
+    avatar_url?: string,
+    bio?: string | null,
+) {
+    if (!session) {
+        return;
+    }
+    name = name ?? handle;
+    avatar_url = (avatar_url ?? session.user.user_metadata.avatar_url) ?? null;
+    bio = bio ?? null;
+
+    const { error } = await supabase.from("profiles")
+    .insert({
+        name,
+        avatar: avatar_url,
+        handle,
+        bio
+    });
+
+    if (error) {
+        console.error("Failed to follow user: ", error);
+    }
+}
+
 //
 // export const useLatestPosts = async (count: number): Promise<Post[]> => {
 //     const { posts, setPosts } = useCache();
