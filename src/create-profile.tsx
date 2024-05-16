@@ -15,9 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { createUser, userExists } from "./lib/database";
+import { createUser, uploadImage, userExists } from "./lib/database";
 import { useAuthSession } from "./lib/auth";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -26,8 +26,24 @@ const FormSchema = z.object({
   handle: z.string().max(4, {
     message: "Handle must be at most 4 characters.",
   }),
+  avatar: z.custom<File>((value) => {
+    if (value instanceof File) return true;
+    throw new Error("Avatar must be a file.");
+  }),
   aboutMe: z.string(),
 });
+
+const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) => {
+    fetch(blobUrl).then((res) => {
+      res.blob().then((blob) => {
+        // please change the file.extension with something more meaningful
+        // or create a utility function to parse from URL
+        const file = new File([blob], 'file.extension', {type: blob.type})
+        resolve(file)
+      })
+    })
+  })
+
 
 export default function CreateProfilePage() {
   const session = useAuthSession(true);
@@ -38,33 +54,59 @@ export default function CreateProfilePage() {
     defaultValues: {
       username: "",
       handle: "",
+      avatar: new File([], ""),
       aboutMe: "",
     },
   });
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    if (!session) return;
+    const avatarUrl = await uploadImage(data.avatar, session.user.id);
+    if (!avatarUrl) {
+      console.error("Failed to upload image");
+      return;
+    }
+
+    const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${avatarUrl.path}`
+
     await createUser(
       session,
       data.handle,
       data.username,
-      undefined,
+      path,
       data.aboutMe
     );
     navigate("/");
   };
+
   useEffect(() => {
     if (!session) return;
+    blobUrlToFile(session.user.user_metadata?.avatar_url ?? "").then((file) => {
+        form.setValue("avatar", file);
+    });
     form.reset({
       username: session.user.user_metadata?.full_name ?? "",
       handle: session.user.email?.split("@")?.[0]?.split(".")?.[0] ?? "",
+      avatar: new File([], ""),
       aboutMe: "",
     });
     userExists(session.user.id).then((exists) => {
       if (exists) {
         navigate("/");
       }
+
       setLoaded(true);
     });
-  }, [session]);
+  }, [session?.user.id]);
+
+  const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+        console.error("No file found");
+        return;
+    }
+    
+    form.setValue("avatar", file);
+  }
 
   return (
     loaded && (
@@ -102,6 +144,39 @@ export default function CreateProfilePage() {
                   <FormMessage />
                 </FormItem>
               )}
+            />
+
+            <FormField
+              control={form.control}
+              name="avatar"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Avatar</FormLabel>
+                  <FormControl>
+                    <>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarUpload}
+                      id="avatar"
+                      hidden
+                    />
+                      <img
+                        src={URL.createObjectURL(field.value)}
+                        alt="avatar"
+                        className="w-12 h-12 rounded-full"
+                        />
+                      <Button
+                        variant="accent"
+                        onClick={() => document.getElementById("avatar")?.click()}
+                        >
+                        Upload
+                        </Button>
+                      </>
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
             />
 
             <FormField

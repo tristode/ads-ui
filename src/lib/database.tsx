@@ -914,25 +914,25 @@ export async function createUser(
   session: Session | null,
   handle: string,
   name?: string,
-  avatar_url?: string,
+  avatarUrl?: string,
   bio?: string | null
 ) {
   if (!session) {
     return;
   }
   name = name ?? handle;
-  avatar_url = avatar_url ?? session.user.user_metadata.avatar_url ?? null;
+  avatarUrl = avatarUrl ?? session.user.user_metadata.avatar_url ?? null;
   bio = bio ?? null;
 
   const { error } = await supabase.from("profiles").insert({
     name,
-    avatar: avatar_url,
+    avatar: avatarUrl,
     handle,
     bio,
   });
 
   if (error) {
-    console.error("Failed to follow user: ", error);
+    console.error("Failed to create user: ", error);
   }
 }
 
