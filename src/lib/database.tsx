@@ -386,9 +386,14 @@ export const usePostsFromFollows = (
 
     const { data, error } = await supabase
       .from("posts")
-      .select("*, follows!(*)")
-      .eq("follows.follower", session.user.id)
-      .eq("follows.followed", "posts.author")
+      .select(
+        `
+                *,
+                profiles!inner!public_posts_author_fkey(*, follows!inner!public_follows_followed_fkey(*)),
+                comments(*, profiles!public_comments_author_fkey(*))
+            `
+      )
+      .eq("profiles.follows.follower", session.user.id)
       .order("posted_at", { ascending: false })
       .limit(postCount);
     if (error) {
