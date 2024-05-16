@@ -40,13 +40,13 @@ export default function Navigation() {
     return (
         <div className="fixed bottom-0 z-10 flex h-16 w-full items-center gap-2 bg-gray-900 p-4 md:bottom-auto md:top-0">
             <Link to="/">
-                <Button className="text-lg p-4 bg-gray-800 rounded-full text-white" size="none"><FaHome /></Button>
+                <Button className="text-lg p-4 hover:bg-gray-700 bg-gray-800 rounded-full text-white" size="none"><FaHome /></Button>
             </Link>
             <Link to="/chats">
-                <Button className="text-lg p-4 bg-gray-800 rounded-full text-white" size="none"><IoChatboxEllipsesOutline /></Button>
+                <Button className="text-lg p-4 hover:bg-gray-700 bg-gray-800 rounded-full text-white" size="none"><IoChatboxEllipsesOutline /></Button>
             </Link>
             <Link to="/latest">
-                <Button className="text-lg p-4 bg-gray-800 rounded-full text-white" size="none"><MdOutlinePostAdd /></Button>
+                <Button className="text-lg p-4 hover:bg-gray-700 bg-gray-800 rounded-full text-white" size="none"><MdOutlinePostAdd /></Button>
             </Link>
             <Auth />
             <ModeToggle />
