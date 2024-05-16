@@ -9,7 +9,17 @@ export function signIn(redirectTo?: string) {
   });
 }
 
-export function useAuthSession(): Session | null {
+export function logOut() {
+  const doLogout = async() =>{
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log("Failed to log out: ", error);
+    }
+  }
+  doLogout();
+};
+
+export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -25,6 +35,34 @@ export function useAuthSession(): Session | null {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkUserExists = async () => {
+    if (!session) {
+      return;
+    }
+
+    const {data, error} = await supabase
+      .from("profies")
+      .select()
+      .eq("id", session.user.id)
+      .single();
+    
+    if (error) {
+      console.error("Failed to fetch user data: ", error);
+    }
+
+    if (!data && !keepLoggedIn) {
+      logOut();
+    }
+
+  }
+
+  useEffect(
+    () => {
+      checkUserExists();
+    },
+    [session]
+  );
 
   return session;
 }
