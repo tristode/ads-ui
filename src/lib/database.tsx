@@ -369,6 +369,104 @@ export const useFollowActions = (): {
   };
 };
 
+export const unlikePost = async (
+  session: Session | null,
+  postId: string,
+  posts: Record<string, Post>,
+  setPosts: (
+    update: (posts: Record<string, Post>) => Record<string, Post>
+  ) => void
+): Promise<void> => {
+  if (!session) {
+    return;
+  }
+
+  const { data, error: err } = await supabase
+    .from("post_likes")
+    .select()
+    .eq("post_id", postId)
+    .eq("user_id", session.user.id)
+    .single();
+
+  if (err) {
+    console.error("Failed to get post: ", err);
+  }
+
+  if (!data) {
+      return;
+  }
+
+  const { error } = await supabase
+    .from("post_likes")
+    .delete()
+    .eq("post_id", postId)
+    .eq("user_id", session.user.id);
+
+  if (error) {
+    console.error("Failed to unlike post: ", error);
+    return;
+  }
+
+  const post = posts[postId];
+  if (!post) {
+    return;
+  }
+  post.reactions = post.reactions || {like: 0};
+  if (post.reactions.like <= 0) {
+      return;
+  }
+  post.reactions.like--;
+
+  setPosts((posts) => ({ ...posts, postId: post }));
+}
+
+export const likePost = async (
+  session: Session | null,
+  postId: string,
+  posts: Record<string, Post>,
+  setPosts: (
+    update: (posts: Record<string, Post>) => Record<string, Post>
+  ) => void
+): Promise<void> => {
+  if (!session) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("post_likes")
+    .insert({
+      post_id: postId,
+      user_id: session.user.id,
+    });
+
+  if (error) {
+    console.error("Failed to like post: ", error);
+    return;
+  }
+
+  const post = posts[postId];
+  if (!post) {
+    return;
+  }
+  post.reactions = post.reactions || {like: 0};
+  post.reactions["like"]++;
+
+  setPosts((posts) => ({ ...posts, postId: post }));
+}
+
+export const usePostLikeActions = (): {
+  like: (postId: string) => void;
+  unlike: (postId: string) => void;
+} => {
+  const session = useAuthSession();
+  const { posts, setPosts } = useCache();
+
+  return {
+    like: (postId: string) => likePost(session, postId, posts, setPosts),
+    unlike: (postId: string) => unlikePost(session, postId, posts, setPosts),
+  };
+};
+
 export const usePostsFromFollows = (
   postCount: number
 ): { posts: Post[] | null; hasMore: boolean } => {
