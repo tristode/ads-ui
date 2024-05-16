@@ -73,12 +73,10 @@ const parsePost = (
       z.date()
     ),
     post_likes: z.array(
-        z.object(
-            {
-                post_id: z.string(),
-                user_id: z.string(),
-            }
-        )
+      z.object({
+        post_id: z.string(),
+        user_id: z.string(),
+      })
     ),
     profiles: z.object({
       id: z.string(),
@@ -158,10 +156,12 @@ const parsePost = (
     postedAt: parsedData.posted_at,
     replies: getReplies(null),
     permalink: `/posts/${parsedData.id}`,
-    reactions: {like: parsedData.post_likes.length},
-    reactedByLoggedInUser:
-        parsedData.post_likes.filter(x => x.user_id === activeUserId).length ?
-            ["like"] : [],
+    reactions: { like: parsedData.post_likes.length },
+    reactedByLoggedInUser: parsedData.post_likes.filter(
+      (x) => x.user_id === activeUserId
+    ).length
+      ? ["like"]
+      : [],
   };
 };
 
@@ -408,7 +408,7 @@ export const unlikePost = async (
   }
 
   if (!data) {
-      return;
+    return;
   }
 
   const { error } = await supabase
@@ -426,17 +426,17 @@ export const unlikePost = async (
   if (!post) {
     return;
   }
-  post.reactions = post.reactions || {like: 0};
+  post.reactions = post.reactions || { like: 0 };
   if (post.reactions.like <= 0) {
-      return;
+    return;
   }
   post.reactions.like--;
 
   post.reactedByLoggedInUser = post.reactedByLoggedInUser || [];
-  post.reactedByLoggedInUser.filter(x => x != "like");
+  post.reactedByLoggedInUser.filter((x) => x != "like");
 
   setPosts((posts) => ({ ...posts, postId: post }));
-}
+};
 
 export const likePost = async (
   session: Session | null,
@@ -450,12 +450,10 @@ export const likePost = async (
     return;
   }
 
-  const { error } = await supabase
-    .from("post_likes")
-    .insert({
-      post_id: postId,
-      user_id: session.user.id,
-    });
+  const { error } = await supabase.from("post_likes").insert({
+    post_id: postId,
+    user_id: session.user.id,
+  });
 
   if (error) {
     console.error("Failed to like post: ", error);
@@ -466,16 +464,18 @@ export const likePost = async (
   if (!post) {
     return;
   }
-  post.reactions = post.reactions || {like: 0};
+  post.reactions = post.reactions || { like: 0 };
   post.reactions["like"]++;
 
   post.reactedByLoggedInUser = post.reactedByLoggedInUser || [];
   post.reactedByLoggedInUser.push("like");
 
   setPosts((posts) => ({ ...posts, postId: post }));
-}
+};
 
-export const usePostLikeActions = (postId: string): {
+export const usePostLikeActions = (
+  postId: string
+): {
   like: () => void;
   unlike: () => void;
 } => {
@@ -641,12 +641,15 @@ const withReply = (
       ]
     : replies.map((comment) => {
         if (comment.id !== parentId) {
-          return comment;
+          return {
+            ...comment,
+            replies: withReply(comment.replies || [], parentId, reply, me),
+          };
         }
 
+        comment.replies = withReply(comment.replies || [], null, reply, me);
         return {
           ...comment,
-          replies: withReply(comment.replies || [], null, reply, me),
         };
       });
 
@@ -666,12 +669,12 @@ export const useReplier = (): ((args: AddCommentArgs) => Promise<void>) => {
       if (!post) {
         return posts;
       }
+      post.replies = withReply(post.replies, args.parentId, posted, me);
 
       return {
         ...posts,
         [args.postId]: {
           ...post,
-          replies: withReply(post.replies, args.parentId, posted, me),
         },
       };
     });
@@ -752,7 +755,7 @@ export const updatePost = async (postId: string, post: NewPostForm) => {
   if (error) {
     console.error("Failed to update post: ", error);
   }
-}
+};
 
 //
 // export const useLatestPosts = async (count: number): Promise<Post[]> => {
