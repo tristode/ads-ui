@@ -47,7 +47,7 @@ export default function ProfilePage() {
                 next={() => setCount(postCount + 5)}
                 hasMore={hasMore}
                 loader={<h3>Loading...</h3>}
-                className="flex flex-col items-center gap-4"
+                className="flex flex-col items-center gap-4 w-full"
                 endMessage="No more posts(("
               >
                 {posts
