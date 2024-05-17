@@ -185,15 +185,11 @@ export default function EditProfilePage() {
             <FormField
               control={form.control}
               name="aboutMe"
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel> About me:</FormLabel>
                   <FormControl>
-                    <Editor
-                      onChange={() => null}
-                      value=""
-                      className="bg-slate-950 rounded-lg"
-                    />
+                  <Input placeholder="Tell us about yourself..." {...field} />
                   </FormControl>
                 </FormItem>
               )}
