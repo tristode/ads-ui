@@ -358,6 +358,7 @@ const fetchUser = async (
 
   if (error) {
     console.error("Error getting user data: ", error);
+    return null;
   }
 
   return {
@@ -712,7 +713,7 @@ export const usePostsFromFollows = (
 export const usePost = (postId: string): Post | null => null;
 export const useComment = (commentId: string): Comment | null => null;
 export const useUser = (userId: string): User | null => {
-  const session = useAuthSession();
+  const session = useAuthSession(true);
   const { users, setUsers } = useCache();
 
   useEffect(() => {
@@ -729,7 +730,7 @@ export const useUser = (userId: string): User | null => {
     fetcher();
   }, [userId, session]);
 
-  return users[userId] ?? null;
+  return users?.[userId] ?? null;
 };
 
 export const searchUsers = async (query: string): Promise<User[]> => {
