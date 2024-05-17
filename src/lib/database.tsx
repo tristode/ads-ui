@@ -84,6 +84,7 @@ const parsePost = (
       name: z.string(),
       bio: z.string().nullable(),
       avatar: z.string(),
+      is_admin: z.boolean().nullable(),
     }),
     comments: z
       .array(
@@ -103,6 +104,7 @@ const parsePost = (
             name: z.string(),
             bio: z.string().nullable(),
             avatar: z.string(),
+            is_admin: z.boolean().nullable(),
           }),
           comment_likes: z.array(
             z.object({
@@ -138,6 +140,9 @@ const parsePost = (
           ...users[author.id],
           ...author,
           bio: author.bio ?? users[author.id]?.bio ?? undefined,
+          checkmarks: author.is_admin
+            ? ["discord", "twitter"]
+            : ["discord", "twitter", "moderator"],
         };
 
         return {
@@ -343,6 +348,7 @@ const userSchema = z.object({
   name: z.string(),
   bio: z.preprocess((val) => val || undefined, z.string().optional()),
   avatar: z.string(),
+  is_admin: z.boolean().optional().nullable(),
 });
 
 const fetchUser = async (
@@ -363,8 +369,12 @@ const fetchUser = async (
     return null;
   }
 
+  const data = userSchema.parse(userData);
   return {
-    ...userSchema.parse(userData),
+    ...data,
+    checkmarks: data.is_admin
+      ? ["discord", "twitter"]
+      : ["discord", "twitter", "moderator"],
     amFollowing,
   };
 };
