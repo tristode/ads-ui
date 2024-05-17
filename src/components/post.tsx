@@ -23,6 +23,7 @@ import { updatePost } from "@/lib/database";
 import { useAuthSession } from "@/lib/auth";
 import ImageUploader from "./image-uploader";
 import Markdown from "./markdown";
+import { Link } from "react-router-dom";
 
 export default function PostCard({
   post,
@@ -145,7 +146,9 @@ export default function PostCard({
           </div>
           {notEditing ? (
             <>
-              <h3 className="mt-3 text-xl font-semibold">{postName}</h3>
+              <Link to={`/post/${post.id}`}>
+                <h3 className="mt-3 text-xl font-semibold">{postName}</h3>
+              </Link>
               {postImages && postImages.length > 0 && (
                 <Gallery images={postImages} />
               )}
