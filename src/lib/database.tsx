@@ -797,6 +797,7 @@ const reply = async (
 const withReply = (
   replies: Comment[],
   parentId: string | null,
+  postId: string,
   reply: z.infer<typeof replySchema>,
   me: User
 ): Comment[] =>
@@ -806,7 +807,7 @@ const withReply = (
         {
           id: reply.id,
           content: reply.content,
-          parentPost: replies[0].parentPost,
+          parentPost: postId,
           postedAt: reply.posted_at,
           authorId: me.id,
           permalink: "",
@@ -814,14 +815,24 @@ const withReply = (
       ]
     : replies.map((comment): Comment => {
         if (comment.id !== parentId) {
-          return {
-            replies: withReply(comment.replies || [], parentId, reply, me),
-            ...comment,
-          };
+          comment.replies = withReply(
+            comment.replies || [],
+            parentId,
+            postId,
+            reply,
+            me
+          );
+        } else {
+          comment.replies = withReply(
+            comment.replies || [],
+            null,
+            postId,
+            reply,
+            me
+          );
         }
 
         return {
-          replies: withReply(comment.replies || [], null, reply, me),
           ...comment,
         };
       });
@@ -842,7 +853,13 @@ export const useReplier = (): ((args: AddCommentArgs) => Promise<void>) => {
       if (!post) {
         return posts;
       }
-      post.replies = withReply(post.replies, args.parentId, posted, me);
+      post.replies = withReply(
+        post.replies,
+        args.parentId,
+        args.postId,
+        posted,
+        me
+      );
 
       return {
         ...posts,
