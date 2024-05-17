@@ -2,7 +2,7 @@ import { FaCog, FaGoogle } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { signIn, useAuthSession } from "@/lib/auth";
-import {useUser} from "@/lib/database";
+import { useUser } from "@/lib/database";
 import { useNavigate } from "react-router-dom";
 
 export default function Auth() {
@@ -20,12 +20,14 @@ export default function Auth() {
   }
 
   return (
-    <div className="flex items-center gap-2 cursor-pointer" onClick={() => {navigate("/edituser")}}>
+    <div
+      className="flex items-center gap-2 cursor-pointer"
+      onClick={() => {
+        navigate("/edituser");
+      }}
+    >
       <Avatar className="w-6 h-6">
-        <AvatarImage
-          alt={me?.name}
-          src={me?.avatar}
-        />
+        <AvatarImage alt={me?.name} src={me?.avatar} />
         <AvatarFallback>{me?.name[0]}</AvatarFallback>
       </Avatar>
       <FaCog className="w-6 h-6" />

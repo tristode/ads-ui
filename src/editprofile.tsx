@@ -33,15 +33,15 @@ const FormSchema = z.object({
   aboutMe: z.string(),
 });
 
-const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) => {
+const blobUrlToFile = (blobUrl: string): Promise<File> =>
+  new Promise((resolve) => {
     fetch(blobUrl).then((res) => {
       res.blob().then((blob) => {
-
-        const file = new File([blob], 'file.extension', {type: blob.type})
-        resolve(file)
-      })
-    })
-  })
+        const file = new File([blob], "file.extension", { type: blob.type });
+        resolve(file);
+      });
+    });
+  });
 
 export default function EditProfilePage() {
   const session = useAuthSession();
@@ -66,22 +66,16 @@ export default function EditProfilePage() {
       return;
     }
 
-    const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${avatarUrl.path}`
+    const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${avatarUrl.path}`;
 
-    await updateUser(
-      session,
-      data.handle,
-      data.username,
-      path,
-      data.aboutMe
-    );
+    await updateUser(session, data.handle, data.username, path, data.aboutMe);
     navigate("/");
   };
 
   useEffect(() => {
     if (!session) return;
     blobUrlToFile(user?.avatar ?? "").then((file) => {
-        form.setValue("avatar", file);
+      form.setValue("avatar", file);
     });
     form.reset({
       username: user?.name ?? "",
@@ -103,12 +97,12 @@ export default function EditProfilePage() {
     e.preventDefault();
     const file = e.target.files?.[0];
     if (!file) {
-        console.error("No file found");
-        return;
+      console.error("No file found");
+      return;
     }
-    
+
     form.setValue("avatar", file);
-  }
+  };
 
   return (
     loaded && (
@@ -156,29 +150,33 @@ export default function EditProfilePage() {
                   <FormLabel>Avatar</FormLabel>
                   <FormControl>
                     <>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarUpload}
-                      id="avatar"
-                      hidden
-                    />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        id="avatar"
+                        hidden
+                      />
                       <img
                         src={URL.createObjectURL(field.value)}
                         alt="avatar"
                         className="w-12 h-12 rounded-full"
-                        />
+                      />
                       <Button
                         variant="accent"
-                        onClick={(evt) => {document.getElementById("avatar")?.click(); evt?.stopPropagation(); evt?.preventDefault();}}
-                        >
+                        onClick={(evt) => {
+                          document.getElementById("avatar")?.click();
+                          evt?.stopPropagation();
+                          evt?.preventDefault();
+                        }}
+                      >
                         Upload
-                        </Button>
-                      </>
-                    </FormControl>
-                    <FormMessage />
+                      </Button>
+                    </>
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
-                )}
+              )}
             />
 
             <FormField
@@ -188,7 +186,7 @@ export default function EditProfilePage() {
                 <FormItem>
                   <FormLabel> About me:</FormLabel>
                   <FormControl>
-                  <Input placeholder="Tell us about yourself..." {...field} />
+                    <Input placeholder="Tell us about yourself..." {...field} />
                   </FormControl>
                 </FormItem>
               )}

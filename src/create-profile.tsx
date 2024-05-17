@@ -32,15 +32,15 @@ const FormSchema = z.object({
   aboutMe: z.string(),
 });
 
-const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) => {
+const blobUrlToFile = (blobUrl: string): Promise<File> =>
+  new Promise((resolve) => {
     fetch(blobUrl).then((res) => {
       res.blob().then((blob) => {
-        const file = new File([blob], 'file.extension', {type: blob.type})
-        resolve(file)
-      })
-    })
-  })
-
+        const file = new File([blob], "file.extension", { type: blob.type });
+        resolve(file);
+      });
+    });
+  });
 
 export default function CreateProfilePage() {
   const session = useAuthSession(true);
@@ -63,22 +63,16 @@ export default function CreateProfilePage() {
       return;
     }
 
-    const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${avatarUrl.path}`
+    const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${avatarUrl.path}`;
 
-    await createUser(
-      session,
-      data.handle,
-      data.username,
-      path,
-      data.aboutMe
-    );
+    await createUser(session, data.handle, data.username, path, data.aboutMe);
     navigate("/");
   };
 
   useEffect(() => {
     if (!session) return;
     blobUrlToFile(session.user.user_metadata?.avatar_url ?? "").then((file) => {
-        form.setValue("avatar", file);
+      form.setValue("avatar", file);
     });
     form.reset({
       username: session.user.user_metadata?.full_name ?? "",
@@ -98,12 +92,12 @@ export default function CreateProfilePage() {
   const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
-        console.error("No file found");
-        return;
+      console.error("No file found");
+      return;
     }
-    
+
     form.setValue("avatar", file);
-  }
+  };
 
   return (
     loaded && (
@@ -151,29 +145,33 @@ export default function CreateProfilePage() {
                   <FormLabel>Avatar</FormLabel>
                   <FormControl>
                     <>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarUpload}
-                      id="avatar"
-                      hidden
-                    />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        id="avatar"
+                        hidden
+                      />
                       <img
                         src={URL.createObjectURL(field.value)}
                         alt="avatar"
                         className="w-12 h-12 rounded-full"
-                        />
+                      />
                       <Button
                         variant="accent"
-                        onClick={(evt) => {document.getElementById("avatar")?.click(); evt?.stopPropagation(); evt?.preventDefault();}}
-                        >
+                        onClick={(evt) => {
+                          document.getElementById("avatar")?.click();
+                          evt?.stopPropagation();
+                          evt?.preventDefault();
+                        }}
+                      >
                         Upload
-                        </Button>
-                      </>
-                    </FormControl>
-                    <FormMessage />
+                      </Button>
+                    </>
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
-                )}
+              )}
             />
 
             <FormField

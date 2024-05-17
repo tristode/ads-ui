@@ -4,25 +4,21 @@ import "./editor-style.css";
 import { useMemo } from "react";
 
 export default function Editor({
-    value,
-    onChange,
-    className,
+  value,
+  onChange,
+  className,
 }: {
-    value: string;
-    onChange: (_: string) => void;
-    className?: string;
+  value: string;
+  onChange: (_: string) => void;
+  className?: string;
 }) {
-    const options = useMemo(
-        () => ({ toolbar: false, status: false, spellChecker: false }),
-        [],
-    );
-    return (
-        <div className={className}>
-            <SimpleMdeReact
-                value={value}
-                onChange={onChange}
-                options={options}
-            />
-        </div>
-    );
+  const options = useMemo(
+    () => ({ toolbar: false, status: false, spellChecker: false }),
+    []
+  );
+  return (
+    <div className={className}>
+      <SimpleMdeReact value={value} onChange={onChange} options={options} />
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 import { useLatestUserPosts, useUser } from "./lib/database";
-import { Link,  useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Checkmark from "./components/ui/checkmark";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -23,9 +23,11 @@ export default function ProfilePage() {
               <AvatarImage alt={user?.name} src={user?.avatar} />
               <AvatarFallback>{user?.name[0]}</AvatarFallback>
             </Avatar>
-            {user?.id === session?.user?.id &&(
+            {user?.id === session?.user?.id && (
               <Link to="/edituser">
-              <Button  className="p-4" variant="ghost">Edit Profile</Button>
+                <Button className="p-4" variant="ghost">
+                  Edit Profile
+                </Button>
               </Link>
             )}
           </div>
@@ -44,21 +46,21 @@ export default function ProfilePage() {
             <span className="font-black text-xs text-gray-500">
               {user?.bio}
             </span>
-              <InfiniteScroll
-                dataLength={posts?.length || 0}
-                next={() => setCount(postCount + 5)}
-                hasMore={hasMore}
-                loader={<h3>Loading...</h3>}
-                className="flex flex-col items-center gap-4 w-full"
-                endMessage="No more posts(("
-              >
-                {posts
-                  ? posts.map((post) => <PostCard post={post} key={post.id} />)
-                  : "No posts for now((("}
-              </InfiniteScroll>
+            <InfiniteScroll
+              dataLength={posts?.length || 0}
+              next={() => setCount(postCount + 5)}
+              hasMore={hasMore}
+              loader={<h3>Loading...</h3>}
+              className="flex flex-col items-center gap-4 w-full"
+              endMessage="No more posts(("
+            >
+              {posts
+                ? posts.map((post) => <PostCard post={post} key={post.id} />)
+                : "No posts for now((("}
+            </InfiniteScroll>
           </div>
         </div>
       </div>
-    </article >
-  )
+    </article>
+  );
 }

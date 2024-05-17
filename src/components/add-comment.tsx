@@ -51,13 +51,8 @@ export default function AddComment({
         <div className="flex flex-row items-stretch overflow-hidden rounded-lg bg-gray-300 dark:bg-gray-600 sm:bg-gray-200">
           <span className="p-2">
             <Avatar className="h-6 w-6">
-              <AvatarImage
-                alt={me?.name}
-                src={me?.avatar}
-              />
-              <AvatarFallback>
-                {me?.name[0]}
-              </AvatarFallback>
+              <AvatarImage alt={me?.name} src={me?.avatar} />
+              <AvatarFallback>{me?.name[0]}</AvatarFallback>
             </Avatar>
           </span>
           <Editor value={content} onChange={setContent} className="w-full" />
