@@ -81,7 +81,7 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     if (!session) return;
-    blobUrlToFile(session.user.user_metadata?.avatar_url ?? "").then((file) => {
+    blobUrlToFile(user?.avatar ?? "").then((file) => {
         form.setValue("avatar", file);
     });
     form.reset({
