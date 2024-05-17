@@ -18,6 +18,7 @@ import CreateProfile from "./create-profile";
 import ProfilePage from "./userpage";
 import LatestPost from "./latest";
 import EditProfilePage from "./editprofile";
+import UserSearch from "./usersearch";
 import { CommentSelectorProvider } from "./lib/comment-selector";
 
 function PostPage() {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "latest",
         element: <LatestPost />,
+      },
+      {
+        path: "search",
+        element: <UserSearch />,
       },
       {
         path: "posts/:id",
