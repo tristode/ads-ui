@@ -1,7 +1,7 @@
 import { FaCog, FaGoogle } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { logOut, signIn, useAuthSession } from "@/lib/auth";
+import { signIn, useAuthSession } from "@/lib/auth";
 import {useUser} from "@/lib/database";
 import { useNavigate } from "react-router-dom";
 

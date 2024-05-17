@@ -1,4 +1,3 @@
-import Editor from "./components/editor";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
