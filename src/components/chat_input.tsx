@@ -19,7 +19,7 @@ export default function ChatInput({ chatId }: { chatId: string }) {
         setMessage("");
         e.preventDefault();
       }}
-      className="flex w-full items-center gap-2 p-4"
+      className="flex w-full items-center gap-2 p-4 mt-auto"
     >
       <Editor
         value={message}
