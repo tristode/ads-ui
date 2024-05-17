@@ -25,27 +25,26 @@ export default function Author({
 
   return (
     <HoverCard>
-      <HoverCardTrigger className="flex items-center space-x-2 cursor-pointer">
-        <Avatar className="w-6 h-6">
-          <AvatarImage alt={user.name} src={user.avatar} />
-          <AvatarFallback>{user.name[0]}</AvatarFallback>
-        </Avatar>
-        <Link
-          to={`/users/${user.id}`}
-          className="font-bold whitespace-nowrap overflow-hidden text-ellipsis"
-        >
-          {user.name}
-        </Link>
-        <span className="flex flex-row gap-0">
-          {user.checkmarks?.map((type) => (
-            <Checkmark key={type} type={type} />
-          ))}
-        </span>
-        {children}
-      </HoverCardTrigger>
+      <Link to={`/users/${user.id}`}>
+        <HoverCardTrigger className="flex items-center space-x-2 cursor-pointer">
+          <Avatar className="w-6 h-6">
+            <AvatarImage alt={user.name} src={user.avatar} />
+            <AvatarFallback>{user.name[0]}</AvatarFallback>
+          </Avatar>
+          <span className="font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+            {user.name}
+          </span>
+          <span className="flex flex-row gap-0">
+            {user.checkmarks?.map((type) => (
+              <Checkmark key={type} type={type} />
+            ))}
+          </span>
+          {children}
+        </HoverCardTrigger>
+      </Link>
       <HoverCardContent align="start">
         <div className="flex flex-col gap-2">
-          <div className="flex items-start space-x-2">
+          <Link to={`/users/${user.id}`} className="flex items-start space-x-2">
             <Avatar className="w-12 h-12">
               <AvatarImage alt={user.name} src={user.avatar} />
               <AvatarFallback>{user.name[0]}</AvatarFallback>
@@ -63,7 +62,7 @@ export default function Author({
                 @{user.handle}
               </span>
             </div>
-          </div>
+          </Link>
           {user.bio && (
             <span className="text-sm text-gray-500">{user.bio}</span>
           )}
