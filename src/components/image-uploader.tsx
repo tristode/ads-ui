@@ -63,7 +63,7 @@ export default function ImageUploader({
                         </div>
                     ))}
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 mt-2">
                 {notUploadedImages.map((file, index) => (
                     <div key={file.name} className="relative">
                         <img
