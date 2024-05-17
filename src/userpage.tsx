@@ -1,5 +1,5 @@
 import { useLatestUserPosts, useUser } from "./lib/database";
-import { Link, redirect, useParams } from "react-router-dom";
+import { Link,  useParams } from "react-router-dom";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Checkmark from "./components/ui/checkmark";
 import InfiniteScroll from "react-infinite-scroll-component";

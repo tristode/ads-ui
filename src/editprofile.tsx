@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { useAuthSession } from "./lib/auth";
-import { createUser, uploadImage, useUser, userExists } from "./lib/database";
+import { uploadImage, useUser, userExists } from "./lib/database";
 import { ChangeEvent, useEffect, useState } from "react";
 import { updateUser } from "./lib/database";
 
