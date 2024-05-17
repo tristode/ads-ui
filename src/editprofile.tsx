@@ -92,6 +92,7 @@ export default function EditProfilePage() {
     });
     userExists(session.user.id).then((exists) => {
       if (!exists) {
+        console.log("User does not exist");
         navigate("/");
       }
 
@@ -100,6 +101,7 @@ export default function EditProfilePage() {
   }, [session?.user.id]);
 
   const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const file = e.target.files?.[0];
     if (!file) {
         console.error("No file found");
@@ -169,7 +171,7 @@ export default function EditProfilePage() {
                         />
                       <Button
                         variant="accent"
-                        onClick={() => document.getElementById("avatar")?.click()}
+                        onClick={(evt) => {document.getElementById("avatar")?.click(); evt?.stopPropagation(); evt?.preventDefault();}}
                         >
                         Upload
                         </Button>
