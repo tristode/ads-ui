@@ -23,7 +23,7 @@ export default function Homepage() {
                 endMessage="No more posts(("
             >
                 {posts
-                    ? posts.map((post) => <PostCard post={post} />)
+                    ? posts.map((post) => <PostCard post={post} key={post.id} />)
                     : "No posts for now((("}
             </InfiniteScroll>
             {session && (
