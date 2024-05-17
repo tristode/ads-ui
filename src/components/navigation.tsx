@@ -48,9 +48,11 @@ export default function Navigation() {
             <Link to="/latest">
                 <Button className="text-lg p-4 hover:bg-gray-700 bg-gray-800 rounded-full text-white" size="none"><MdOutlinePostAdd /></Button>
             </Link>
-            <Auth />
-            <ModeToggle />
-            <UserSearch />
+            <div className="self-end ml-auto flex items-center gap-2 p-4 h-full">
+                <UserSearch />
+                <ModeToggle />
+                <Auth />
+            </div>
         </div>
     );
 }
