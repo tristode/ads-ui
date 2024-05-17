@@ -710,8 +710,6 @@ export const usePostsFromFollows = (
   return { posts: followedPosts, hasMore };
 };
 
-export const usePost = (postId: string): Post | null => null;
-export const useComment = (commentId: string): Comment | null => null;
 export const useUser = (userId: string): User | null => {
   const session = useAuthSession(true);
   const { users, setUsers } = useCache();
@@ -764,8 +762,6 @@ export const useSearchUsers = (query: string): User[] => {
   return users;
 };
 
-export const setLike = async (postId: string): Promise<void> => undefined;
-
 const replySchema = z.object({
   id: z.string(),
   content: z.string(),
@@ -798,14 +794,17 @@ const reply = async (
 
 const withReply = (
   replies: Comment[],
-  parentId: string | null,
+  parentId: string,
   reply: z.infer<typeof replySchema>,
-  me: User
+  me: User,
+  parentComment: string | null = null,
 ): Comment[] =>
   parentId === null
     ? [
         ...replies,
         {
+          parentPost: parentId,
+          parentComment: parentComment ?? undefined,
           id: reply.id,
           content: reply.content,
           postedAt: reply.posted_at,
@@ -814,16 +813,9 @@ const withReply = (
         },
       ]
     : replies.map((comment) => {
-        if (comment.id !== parentId) {
-          return {
-            ...comment,
-            replies: withReply(comment.replies || [], parentId, reply, me),
-          };
-        }
-
-        comment.replies = withReply(comment.replies || [], null, reply, me);
         return {
-          ...comment,
+        ...comment,
+        replies: withReply(comment.replies || [], parentId, reply, me, reply.id),
         };
       });
 
@@ -843,7 +835,8 @@ export const useReplier = (): ((args: AddCommentArgs) => Promise<void>) => {
       if (!post) {
         return posts;
       }
-      post.replies = withReply(post.replies, args.parentId, posted, me);
+
+      post.replies = withReply(post.replies, post.id, posted, me);
 
       return {
         ...posts,
@@ -988,7 +981,7 @@ export async function userExists(userId: string) {
     .eq("id", userId)
     .single();
 
-  if (error) {
+  if (error || !data) {
     return false;
   }
 

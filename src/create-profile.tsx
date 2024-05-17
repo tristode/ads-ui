@@ -186,7 +186,7 @@ export default function CreateProfilePage() {
             <FormField
               control={form.control}
               name="aboutMe"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel> About me:</FormLabel>
                   <FormControl>

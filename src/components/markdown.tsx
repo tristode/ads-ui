@@ -90,7 +90,6 @@ export default function MarkdownContent({ content }: { content: string }) {
           return <CodeArea language={language}>{children}</CodeArea>;
         },
       }}
-      paragraph={false}
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeRaw, rehypeHighlight]}
     >

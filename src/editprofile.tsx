@@ -45,7 +45,6 @@ const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) =
     })
   })
 
-
 export default function EditProfilePage() {
   const session = useAuthSession(true);
   const user = useUser(session?.user.id ?? "");
@@ -188,7 +187,7 @@ export default function EditProfilePage() {
             <FormField
               control={form.control}
               name="aboutMe"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel> About me:</FormLabel>
                   <FormControl>

@@ -81,6 +81,7 @@ export default function Gallery({ images }: { images: string[] }) {
           style={{
             gridArea: String.fromCharCode(97 + index),
           }}
+          key={image}
         >
           <FullScreenableImage
             key={image}
