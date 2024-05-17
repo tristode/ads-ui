@@ -16,7 +16,7 @@ export default function EditProfilePage() {
       <div className="flex flex-col items-center justify-center pt-16">
         <div className="flex flex-col items-start justify-center w-full md:w-5/6 p-10 m-10 bg-white shadow dark:bg-gray-900 mx-7 rounded-2xl">
           <div className="flex flex-row">
-            <Avatar className="w-128 h-128">
+            <Avatar className="w-28 h-28">
               <AvatarImage alt={user?.name} src={user?.avatar} />
               <AvatarFallback>{user?.name[0]}</AvatarFallback>
             </Avatar>
