@@ -23,7 +23,7 @@ export default function ProfilePage() {
               <AvatarImage alt={user?.name} src={user?.avatar} />
               <AvatarFallback>{user?.name[0]}</AvatarFallback>
             </Avatar>
-            {/* {user?.id === session?.user?.id && */(
+            {user?.id === session?.user?.id &&(
               <Button onClick={() => redirect("/edit-profile")} className="mx-64 p-4" variant="ghost">Edit Profile</Button>
             )}
           </div>
