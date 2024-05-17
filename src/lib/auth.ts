@@ -47,15 +47,11 @@ export function useAuthSession(keepLoggedIn: boolean = false): Session | null {
       return;
     }
 
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("profiles")
       .select()
       .eq("id", session.user.id)
       .single();
-
-    if (error) {
-      console.error("Failed to fetch user data: ", error);
-    }
 
     if (!data && !keepLoggedIn) {
       logOut();
