@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthSession } from "./lib/auth";
 import { createUser, uploadImage, useUser, userExists } from "./lib/database";
 import { ChangeEvent, useEffect, useState } from "react";
-
+import { updateUser } from "./lib/database";
 
 import {
   Form,
@@ -37,8 +37,7 @@ const FormSchema = z.object({
 const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) => {
     fetch(blobUrl).then((res) => {
       res.blob().then((blob) => {
-        // please change the file.extension with something more meaningful
-        // or create a utility function to parse from URL
+
         const file = new File([blob], 'file.extension', {type: blob.type})
         resolve(file)
       })
@@ -46,7 +45,7 @@ const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) =
   })
 
 export default function EditProfilePage() {
-  const session = useAuthSession(true);
+  const session = useAuthSession();
   const user = useUser(session?.user.id ?? "");
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
@@ -59,6 +58,7 @@ export default function EditProfilePage() {
       aboutMe: "",
     },
   });
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     if (!session) return;
     const avatarUrl = await uploadImage(data.avatar, session.user.id);
@@ -69,7 +69,7 @@ export default function EditProfilePage() {
 
     const path = `https://ltabpziqzfhhohokzdfm.supabase.co/storage/v1/object/public/PostImages/${avatarUrl.path}`
 
-    await createUser(
+    await updateUser(
       session,
       data.handle,
       data.username,
@@ -87,11 +87,11 @@ export default function EditProfilePage() {
     form.reset({
       username: user?.name ?? "",
       handle: user?.handle ?? "",
-      //avatar: user?.avatar ?? new File([], ""),
+      avatar: new File([], ""),
       aboutMe: user?.bio ?? "",
     });
     userExists(session.user.id).then((exists) => {
-      if (exists) {
+      if (!exists) {
         navigate("/");
       }
 

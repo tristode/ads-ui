@@ -974,6 +974,32 @@ export async function createUser(
   }
 }
 
+export async function updateUser(
+  session: Session | null,
+  handle: string,
+  name?: string,
+  avatarUrl?: string,
+  bio?: string | null
+) {
+  if (!session) {
+    return;
+  }
+  name = name ?? handle;
+  avatarUrl = avatarUrl ?? session.user.user_metadata.avatar_url ?? null;
+  bio = bio ?? null;
+
+  const { error } = await supabase.from("profiles").update({
+    name,
+    avatar: avatarUrl,
+    handle,
+    bio,
+  });
+
+  if (error) {
+    console.error("Failed to create user: ", error);
+  }
+}
+
 export async function userExists(userId: string) {
   const { data, error } = await supabase
     .from("profiles")
