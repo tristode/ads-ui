@@ -710,6 +710,8 @@ export const usePostsFromFollows = (
   return { posts: followedPosts, hasMore };
 };
 
+export const usePost = (postId: string): Post | null => null;
+export const useComment = (commentId: string): Comment | null => null;
 export const useUser = (userId: string): User | null => {
   const session = useAuthSession(true);
   const { users, setUsers } = useCache();
@@ -762,6 +764,8 @@ export const useSearchUsers = (query: string): User[] => {
   return users;
 };
 
+export const setLike = async (postId: string): Promise<void> => undefined;
+
 const replySchema = z.object({
   id: z.string(),
   content: z.string(),
@@ -794,17 +798,14 @@ const reply = async (
 
 const withReply = (
   replies: Comment[],
-  parentId: string,
+  parentId: string | null,
   reply: z.infer<typeof replySchema>,
-  me: User,
-  parentComment: string | null = null,
+  me: User
 ): Comment[] =>
   parentId === null
     ? [
         ...replies,
         {
-          parentPost: parentId,
-          parentComment: parentComment ?? undefined,
           id: reply.id,
           content: reply.content,
           postedAt: reply.posted_at,
@@ -813,9 +814,16 @@ const withReply = (
         },
       ]
     : replies.map((comment) => {
+        if (comment.id !== parentId) {
+          return {
+            ...comment,
+            replies: withReply(comment.replies || [], parentId, reply, me),
+          };
+        }
+
+        comment.replies = withReply(comment.replies || [], null, reply, me);
         return {
-        ...comment,
-        replies: withReply(comment.replies || [], parentId, reply, me, reply.id),
+          ...comment,
         };
       });
 
@@ -835,8 +843,7 @@ export const useReplier = (): ((args: AddCommentArgs) => Promise<void>) => {
       if (!post) {
         return posts;
       }
-
-      post.replies = withReply(post.replies, post.id, posted, me);
+      post.replies = withReply(post.replies, args.parentId, posted, me);
 
       return {
         ...posts,
@@ -993,7 +1000,8 @@ export async function updateUser(
     avatar: avatarUrl,
     handle,
     bio,
-  });
+  }).eq("id", session.user.id);
+  ;
 
   if (error) {
     console.error("Failed to create user: ", error);
@@ -1007,7 +1015,7 @@ export async function userExists(userId: string) {
     .eq("id", userId)
     .single();
 
-  if (error || !data) {
+  if (error) {
     return false;
   }
 
