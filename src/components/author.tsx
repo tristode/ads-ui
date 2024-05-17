@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import Checkmark from "./ui/checkmark";
 import { useChatCreatorWithUser } from "@/lib/chat";
 import { useFollowActions } from "@/lib/database";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Author({
   user,
@@ -30,9 +30,12 @@ export default function Author({
           <AvatarImage alt={user.name} src={user.avatar} />
           <AvatarFallback>{user.name[0]}</AvatarFallback>
         </Avatar>
-        <span className="font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+        <Link
+          to={`/users/${user.id}`}
+          className="font-bold whitespace-nowrap overflow-hidden text-ellipsis"
+        >
           {user.name}
-        </span>
+        </Link>
         <span className="flex flex-row gap-0">
           {user.checkmarks?.map((type) => (
             <Checkmark key={type} type={type} />
