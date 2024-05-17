@@ -15,8 +15,8 @@ export default function ProfilePage() {
   const { posts, hasMore } = useLatestUserPosts(postCount, userId ?? "");
   const session = useAuthSession();
   return (
-    <article className="mx-auto w-full max-w-2xl overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
-      <div className="flex flex-col items-center justify-center pt-16">
+    <article className="mx-auto w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+      <div className="flex flex-col items-center justify-center pt-16 w-full">
         <div className="flex flex-col items-start justify-center w-full md:w-5/6 p-10 m-10 bg-white shadow dark:bg-gray-900 mx-7 rounded-2xl">
           <div className="flex flex-row">
             <Avatar className="w-28 h-28">
@@ -27,7 +27,7 @@ export default function ProfilePage() {
               <Button onClick={() => redirect("/edit-profile")} className="mx-64 p-4" variant="ghost">Edit Profile</Button>
             )}
           </div>
-          <div className="flex flex-col gap-0 ">
+          <div className="flex flex-col gap-0 w-full">
             <div className="flex items-center space-x-2">
               <span className="font-bold text-xl ">{user?.name}</span>
               <div className="flex flex-row gap-0">
@@ -42,7 +42,6 @@ export default function ProfilePage() {
             <span className="font-black text-xs text-gray-500">
               {user?.bio}
             </span>
-            <span>
               <InfiniteScroll
                 dataLength={posts?.length || 0}
                 next={() => setCount(postCount + 5)}
@@ -52,10 +51,9 @@ export default function ProfilePage() {
                 endMessage="No more posts(("
               >
                 {posts
-                  ? posts.map((post) => <PostCard post={post} />)
+                  ? posts.map((post) => <PostCard post={post} key={post.id} />)
                   : "No posts for now((("}
               </InfiniteScroll>
-            </span>
           </div>
         </div>
       </div>
