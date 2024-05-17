@@ -2,6 +2,7 @@ import { useChatMessages } from "@/lib/chat";
 import { useUser } from "@/lib/database";
 import { User } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import DiscordInvite from "./ui/discord-invite";
 
 function ChatMessage({
   author,
@@ -51,6 +52,18 @@ export default function ChatMessages({
           This chat is owned by @{owner.handle}
         </span>
       )}
+      <span className="flex flex-col items-center gap-4 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-950">
+        Цей сайт - для балів з вебу, насправді ми вас в діскорді чекаємо!
+        <DiscordInvite
+          link="https://discord.gg/mnwByZAS"
+          name="УКУ: Прикладні науки"
+          icon="/logo.png"
+        >
+          <p className="text-sm text-gray-600 dark:text-gray-400 max-w-full text-nowrap text-ellipsis overflow-hidden">
+            ФПН має діскорд-сервер :3
+          </p>
+        </DiscordInvite>
+      </span>
       <span className="text-xs self-center p-2 text-gray-500 dark:text-gray-400">
         This is the beginning of the chat. Say hi!
       </span>
