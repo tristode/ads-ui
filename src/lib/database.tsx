@@ -638,7 +638,7 @@ export const likeComment = async (
   if (!comment) {
     return;
   }
-  comment.reactions = comment.reactions || { like: 1 };
+  comment.reactions = comment.reactions || { like: 0 };
   comment.reactions.like++;
 
   comment.reactedByLoggedInUser = comment.reactedByLoggedInUser || [];
