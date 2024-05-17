@@ -47,6 +47,7 @@ const blobUrlToFile = (blobUrl:string): Promise<File> => new Promise((resolve) =
 
 export default function CreateProfilePage() {
   const session = useAuthSession(true);
+  console.log(session);
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -59,8 +60,10 @@ export default function CreateProfilePage() {
     },
   });
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    console.log("onSubmit");
     if (!session) return;
     const avatarUrl = await uploadImage(data.avatar, session.user.id);
+    console.log(avatarUrl);
     if (!avatarUrl) {
       console.error("Failed to upload image");
       return;
@@ -75,6 +78,7 @@ export default function CreateProfilePage() {
       path,
       data.aboutMe
     );
+    console.log("createdUser")
     navigate("/");
   };
 

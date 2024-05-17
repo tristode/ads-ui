@@ -1,5 +1,5 @@
 import { useLatestUserPosts, useUser } from "./lib/database";
-import { redirect, useParams } from "react-router-dom";
+import { Link, redirect, useParams } from "react-router-dom";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import Checkmark from "./components/ui/checkmark";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -18,13 +18,15 @@ export default function ProfilePage() {
     <article className="mx-auto w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
       <div className="flex flex-col items-center justify-center p-4 md:pt-16 w-full">
         <div className="flex flex-col items-start justify-center w-full md:w-5/6 p-4 md:p-10 m-10 bg-white shadow dark:bg-gray-900 mx-7 rounded-2xl">
-          <div className="flex w-full flex-row">
+          <div className="flex w-full flex-row justify-between">
             <Avatar className="w-28 h-28">
               <AvatarImage alt={user?.name} src={user?.avatar} />
               <AvatarFallback>{user?.name[0]}</AvatarFallback>
             </Avatar>
             {user?.id === session?.user?.id &&(
-              <Button onClick={() => redirect("/edit-profile")} className="p-4" variant="ghost">Edit Profile</Button>
+              <Link to="/edituser">
+              <Button  className="p-4" variant="ghost">Edit Profile</Button>
+              </Link>
             )}
           </div>
           <div className="flex flex-col gap-0 w-full">
