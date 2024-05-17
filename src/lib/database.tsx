@@ -153,7 +153,7 @@ const parsePost = (
           postedAt: comment.posted_at,
           authorId: author.id,
           replies: getReplies(comment.id),
-          permalink: "",
+          permalink: `/posts/${comment.parent_post}/comments/${comment.id}`,
           reactions: { like: comment.comment_likes.length },
           reactedByLoggedInUser: comment.comment_likes.filter(
             (x) => x.user_id === activeUserId
@@ -198,7 +198,8 @@ const fetchPost = async (
       `
                 *,
                 profiles!public_posts_author_fkey(*),
-                comments(*, profiles!public_comments_author_fkey(*))
+                comments(*, profiles!public_comments_author_fkey(*), comment_likes(*)),
+                post_likes(*)
             `
     )
     .eq("id", postId)
@@ -313,7 +314,7 @@ export const useLatestUserPosts = (
 
   useEffect(() => {
     fetchPosts();
-  }, [nPosts, session]);
+  }, [nPosts, session, userId]);
 
   return { posts: latestPosts, hasMore };
 };
@@ -820,7 +821,7 @@ const withReply = (
           parentPost: postId,
           postedAt: reply.posted_at,
           authorId: me.id,
-          permalink: "",
+          permalink: `/posts/${postId}/comments/${reply.id}`,
         },
       ]
     : replies.map((comment): Comment => {

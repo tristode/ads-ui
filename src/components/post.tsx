@@ -146,7 +146,7 @@ export default function PostCard({
           </div>
           {notEditing ? (
             <>
-              <Link to={`/post/${post.id}`}>
+              <Link to={post.permalink}>
                 <h3 className="mt-3 text-xl font-semibold">{postName}</h3>
               </Link>
               {postImages && postImages.length > 0 && (

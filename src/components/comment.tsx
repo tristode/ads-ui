@@ -1,4 +1,5 @@
 import { signIn, useAuthSession } from "@/lib/auth";
+import { useCommentSelector } from "@/lib/comment-selector";
 import {
   useCommentLikeActions,
   useDeleteComment,
@@ -26,9 +27,16 @@ export default function CommentCard({
   const deleteComment = useDeleteComment();
   const author = useUser(comment.authorId);
   const { like, unlike } = useCommentLikeActions(postId, comment.id);
+  const selectedCommentId = useCommentSelector();
 
   return (
-    <div className="p-4 bg-white dark:bg-gray-800">
+    <div
+      className={`p-4 ${
+        selectedCommentId === comment.id
+          ? "bg-gray-100 dark:bg-gray-900"
+          : "bg-white dark:bg-gray-800"
+      }`}
+    >
       {author && (
         <Author user={author}>
           <Timedelta dateTime={comment.postedAt} />

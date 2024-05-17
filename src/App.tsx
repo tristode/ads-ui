@@ -18,11 +18,27 @@ import CreateProfile from "./create-profile";
 import ProfilePage from "./userpage";
 import LatestPost from "./latest";
 import EditProfilePage from "./editprofile";
+import { CommentSelectorProvider } from "./lib/comment-selector";
+
 function PostPage() {
   const { id } = useParams();
   const post = usePostPreview(id || "");
 
   return post && <Post post={post} />;
+}
+
+function CommentPage() {
+  const { id, commentId } = useParams();
+  const post = usePostPreview(id || "");
+
+  return (
+    post &&
+    commentId && (
+      <CommentSelectorProvider commentId={commentId}>
+        <Post post={post} />
+      </CommentSelectorProvider>
+    )
+  );
 }
 
 const router = createBrowserRouter([
@@ -50,8 +66,17 @@ const router = createBrowserRouter([
         element: <LatestPost />,
       },
       {
-        path: "post/:id",
-        element: <PostPage />,
+        path: "posts/:id",
+        children: [
+          {
+            index: true,
+            element: <PostPage />,
+          },
+          {
+            path: "comments/:commentId",
+            element: <CommentPage />,
+          },
+        ],
       },
       {
         path: "chats",
