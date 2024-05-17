@@ -268,7 +268,8 @@ export const useLatestPosts = (
 };
 
 export const useLatestUserPosts = (
-  nPosts: number,userId:string
+  nPosts: number,
+  userId: string
 ): { posts: Post[] | null; hasMore: boolean } => {
   const { setPosts, users, setUsers } = useCache();
   const [latestPosts, setLatestPosts] = useState<Post[] | null>(null);
@@ -285,7 +286,8 @@ export const useLatestUserPosts = (
                 comments(*, profiles!public_comments_author_fkey(*), comment_likes(*)),
                 post_likes(*)
             `
-      ).eq('author', userId)
+      )
+      .eq("author", userId)
       .order("posted_at", { ascending: false })
       .limit(nPosts);
 
@@ -710,8 +712,6 @@ export const usePostsFromFollows = (
   return { posts: followedPosts, hasMore };
 };
 
-export const usePost = (postId: string): Post | null => null;
-export const useComment = (commentId: string): Comment | null => null;
 export const useUser = (userId: string): User | null => {
   const session = useAuthSession(true);
   const { users, setUsers } = useCache();
@@ -764,8 +764,6 @@ export const useSearchUsers = (query: string): User[] => {
   return users;
 };
 
-export const setLike = async (postId: string): Promise<void> => undefined;
-
 const replySchema = z.object({
   id: z.string(),
   content: z.string(),
@@ -808,21 +806,22 @@ const withReply = (
         {
           id: reply.id,
           content: reply.content,
+          parentPost: replies[0].parentPost,
           postedAt: reply.posted_at,
           authorId: me.id,
           permalink: "",
         },
       ]
-    : replies.map((comment) => {
+    : replies.map((comment): Comment => {
         if (comment.id !== parentId) {
           return {
-            ...comment,
             replies: withReply(comment.replies || [], parentId, reply, me),
+            ...comment,
           };
         }
 
-        comment.replies = withReply(comment.replies || [], null, reply, me);
         return {
+          replies: withReply(comment.replies || [], null, reply, me),
           ...comment,
         };
       });
@@ -932,13 +931,15 @@ export const updatePost = async (postId: string, post: NewPostForm) => {
 };
 
 export const uploadImage = async (file: File, userId: string) => {
-    if (!userId) {
-        console.error("No user ID provided");
-        return;
-    }
+  if (!userId) {
+    console.error("No user ID provided");
+    return;
+  }
 
-    const filename = `${userId}/${new Date().getTime()}.png`;
-    const { data, error } = await supabase.storage.from('PostImages').upload(filename, file);
+  const filename = `${userId}/${new Date().getTime()}.png`;
+  const { data, error } = await supabase.storage
+    .from("PostImages")
+    .upload(filename, file);
 
   if (error) {
     console.error("Failed to upload image: ", error);
@@ -948,12 +949,12 @@ export const uploadImage = async (file: File, userId: string) => {
 };
 
 export const deleteImage = async (path: string) => {
-    const { error } = await supabase.storage.from('PostImages').remove([path]);
+  const { error } = await supabase.storage.from("PostImages").remove([path]);
 
-    if (error) {
-        console.error("Failed to delete image: ", error);
-    }
-}
+  if (error) {
+    console.error("Failed to delete image: ", error);
+  }
+};
 
 export async function createUser(
   session: Session | null,
@@ -995,21 +996,22 @@ export async function updateUser(
   avatarUrl = avatarUrl ?? session.user.user_metadata.avatar_url ?? null;
   bio = bio ?? null;
 
-  const { error } = await supabase.from("profiles").update({
-    name,
-    avatar: avatarUrl,
-    handle,
-    bio,
-  }).eq("id", session.user.id);
-  ;
-
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      name,
+      avatar: avatarUrl,
+      handle,
+      bio,
+    })
+    .eq("id", session.user.id);
   if (error) {
     console.error("Failed to create user: ", error);
   }
 }
 
 export async function userExists(userId: string) {
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("profiles")
     .select()
     .eq("id", userId)
