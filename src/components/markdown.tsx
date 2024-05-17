@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 import { cn } from "@/lib/utils";
 import "highlight.js/styles/base16/ir-black.css";
@@ -91,7 +92,7 @@ export default function MarkdownContent({ content }: { content: string }) {
         },
       }}
       remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeRaw, rehypeHighlight]}
+      rehypePlugins={[rehypeRaw, rehypeHighlight, rehypeSanitize]}
     >
       {content}
     </Markdown>
