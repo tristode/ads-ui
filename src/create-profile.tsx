@@ -166,7 +166,7 @@ export default function CreateProfilePage() {
                         />
                       <Button
                         variant="accent"
-                        onClick={() => document.getElementById("avatar")?.click()}
+                        onClick={(evt) => {document.getElementById("avatar")?.click(); evt?.stopPropagation(); evt?.preventDefault();}}
                         >
                         Upload
                         </Button>
