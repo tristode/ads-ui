@@ -1,30 +1,23 @@
-# React + TypeScript + Vite
+# A reddit-like social network
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+https://t.r1a.nl
 
-Currently, two official plugins are available:
+As it is an educational project, the database is disabled, when not used for an extensive period of time. If you want to see the project in action, please contact the authors to enable it.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Description
 
-## Expanding the ESLint configuration
+This is a reddit-like social network where users can create (with images attached), edit, comment and like posts.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Showcase
 
-- Configure the top-level `parserOptions` property like this:
+<img src="img/main_page.png" width="800">
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+<img src="img/create_post_page.png" width="800">
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+<img src="img/images_post_page.png" width="800">
+
+<img src="img/profile_page.png" width="800">
+
+<img src="img/edit_post_page.png" width="800">
+
+<img src="img/chat_page.png" width="800">
